@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>404 — Mission Failed | AeroWebAI</title>
+<meta name="robots" content="noindex" />
+<meta name="theme-color" content="#0b1220" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-811VYN24EB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-811VYN24EB');
+</script>
+<style>
+  /* =========================
+     Mobile-first Naruto 404
+     Minimal text • Max detail
+     ========================= */
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    overflow:hidden;
+  }
+  :focus-visible{outline:3px solid rgba(0,198,255,.35);outline-offset:3px;border-radius:14px}
+  a{color:inherit}
+
+  :root{
+    --bg:
+      radial-gradient(1200px 900px at 15% 12%, rgba(255,140,0,.10), transparent 60%),
+      radial-gradient(1100px 900px at 85% 18%, rgba(0,200,255,.12), transparent 62%),
+      radial-gradient(1000px 800px at 55% 110%, rgba(0,0,0,.06), transparent 60%),
+      linear-gradient(180deg,#f8fafc,#f6f7ff);
+
+    --text:#0b1220;
+    --muted:#5a6b7f;
+
+    --card: rgba(255,255,255,.86);
+    --cardB: rgba(13,23,40,.10);
+    --glass: rgba(255,255,255,.62);
+    --glassB: rgba(0,0,0,.10);
+
+    --leaf:#12b981;
+    --chakra:#00c6ff;
+    --chakra2:#7c4dff;
+    --warn:#ff4d6d;
+
+    --btn: linear-gradient(135deg, rgba(0,198,255,.95), rgba(124,77,255,.95));
+    --btnText:#06101b;
+    --glow: rgba(0,198,255,.22);
+
+    --shadow: 0 24px 90px rgba(0,0,0,.14);
+    --r: 22px;
+  }
+
+  /* Subtle paper texture (Naruto scroll vibe) */
+  .paper{
+    position:fixed;inset:0;pointer-events:none;opacity:.30;
+    background:
+      linear-gradient(0deg, rgba(255,255,255,.30), rgba(255,255,255,0)),
+      repeating-linear-gradient(90deg, rgba(0,0,0,0) 0 86px, rgba(0,0,0,.03) 87px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0) 0 66px, rgba(0,0,0,.02) 67px);
+    mix-blend-mode:multiply;
+  }
+
+  canvas#fx{
+    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.95;
+  }
+
+  /* Layout */
+  .wrap{
+    position:relative;z-index:5;
+    min-height:100%;
+    display:grid;
+    place-items:center;
+    padding:14px;
+  }
+
+  .card{
+    width:min(980px,100%);
+    background: var(--card);
+    border:1px solid var(--cardB);
+    border-radius: calc(var(--r) + 6px);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+    overflow:hidden;
+  }
+
+  /* Top bar (small, not noisy) */
+  .top{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;
+    padding:12px 14px;
+    border-bottom:1px solid rgba(0,0,0,.06);
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-weight:1000;
+    letter-spacing:.1px;
+  }
+  .dot{
+    width:10px;height:10px;border-radius:999px;
+    background:var(--leaf);
+    box-shadow:0 0 0 7px rgba(18,185,129,.12);
+  }
+  .miniRight{
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 10px;border-radius:999px;
+    border:1px solid var(--glassB);
+    background:var(--glass);
+    font-size:12px;
+    font-weight:900;
+    color:var(--muted);
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pill i{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--chakra);
+    box-shadow:0 0 0 5px rgba(0,198,255,.10);
+  }
+
+  .body{
+    display:grid;
+    grid-template-columns: 1fr;
+  }
+
+  /* Content (mobile-first) */
+  .left{
+    padding:16px 16px 14px;
+  }
+
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 12px;
+    border-radius:999px;
+    background:rgba(255,77,109,.10);
+    border:1px solid rgba(255,77,109,.22);
+    color:#b31355;
+    font-size:12px;
+    font-weight:1000;
+    margin-bottom:10px;
+  }
+  .badge span{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--warn);
+    box-shadow:0 0 0 6px rgba(255,77,109,.12);
+  }
+
+  /* Minimal text */
+  h1{
+    font-size:28px;
+    line-height:1.08;
+    letter-spacing:-.6px;
+    margin-bottom:8px;
+  }
+  .oneLine{
+    color:var(--muted);
+    font-weight:800;
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:12px;
+  }
+
+  /* Mini info row (compact, useful) */
+  .miniStats{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .box{
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.08);
+    background: rgba(255,255,255,.70);
+    padding:10px 12px;
+  }
+  .k{
+    font-size:11px;
+    color:var(--muted);
+    font-weight:1000;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+  }
+  .v{
+    margin-top:4px;
+    font-size:13px;
+    font-weight:1100;
+    color:var(--text);
+    word-break:break-word;
+  }
+
+  /* Buttons (thumb-friendly) */
+  .actions{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+  }
+  .btn{
+    appearance:none;
+    border:1px solid var(--glassB);
+    background:var(--glass);
+    color:var(--text);
+    padding:14px 14px;
+    border-radius:16px;
+    font-weight:1100;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:active{transform:scale(.99)}
+  .primary{
+    background:var(--btn);
+    border-color:transparent;
+    color:var(--btnText);
+    box-shadow: 0 22px 70px var(--glow);
+    position:relative;
+    overflow:hidden;
+  }
+  .primary:before{
+    content:"";
+    position:absolute; inset:-60px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.18), transparent 60%),
+      conic-gradient(from 0deg, rgba(0,198,255,0), rgba(0,198,255,.55), rgba(124,77,255,0));
+    opacity:0;
+    transform:scale(.7) rotate(0deg);
+  }
+  .primary:active:before{
+    opacity:.95;
+    animation: portal .55s ease-out 1;
+  }
+  @keyframes portal{
+    from{transform:scale(.65) rotate(0deg)}
+    to{transform:scale(1.2) rotate(240deg)}
+  }
+
+  /* Right (visual only, minimal text) */
+  .right{
+    padding:14px 16px 16px;
+    border-top:1px solid rgba(0,0,0,.06);
+    background:
+      radial-gradient(900px 520px at 30% 0%, rgba(0,198,255,.16), transparent 65%),
+      radial-gradient(800px 520px at 80% 10%, rgba(255,140,0,.10), transparent 60%);
+  }
+  .hero{
+    border-radius:18px;
+    border:1px solid rgba(0,0,0,.08);
+    background: rgba(255,255,255,.58);
+    padding:14px;
+    position:relative;
+    overflow:hidden;
+  }
+  .aura{
+    position:absolute; inset:-90px;
+    background:
+      radial-gradient(circle at 35% 40%, rgba(0,198,255,.22), transparent 60%),
+      radial-gradient(circle at 70% 55%, rgba(124,77,255,.16), transparent 60%),
+      radial-gradient(circle at 50% 88%, rgba(255,140,0,.14), transparent 60%);
+    filter: blur(18px);
+    opacity:.95;
+    pointer-events:none;
+    animation: aura 2.9s ease-in-out infinite;
+  }
+  @keyframes aura{
+    0%,100%{transform:scale(1) rotate(0deg)}
+    50%{transform:scale(1.12) rotate(7deg)}
+  }
+
+  .sigil{
+    position:relative; z-index:2;
+    border-radius:16px;
+    border:1px dashed rgba(0,0,0,.12);
+    background: rgba(255,255,255,.46);
+    padding:12px;
+    display:grid;
+    place-items:center;
+    min-height:200px;
+  }
+  .sigil svg{
+    width:min(340px,100%);
+    height:auto;
+    filter: drop-shadow(0 18px 36px rgba(0,0,0,.16));
+    animation: floaty 2.8s ease-in-out infinite;
+  }
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  /* Bottom sheet mini game (mobile UX) */
+  .sheetBackdrop{
+    position:fixed; inset:0;
+    background: rgba(7,10,18,.45);
+    backdrop-filter: blur(7px);
+    z-index:100;
+    display:none;
+  }
+  .sheetBackdrop.show{display:block}
+  .sheet{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    z-index:101;
+    background: rgba(255,255,255,.96);
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border:1px solid rgba(0,0,0,.10);
+    box-shadow: 0 -30px 120px rgba(0,0,0,.24);
+    transform: translateY(110%);
+    transition: transform .22s ease;
+    padding:12px 12px 14px;
+    max-height: 86vh;
+    overflow:auto;
+  }
+  .sheet.show{transform: translateY(0)}
+  .grab{
+    width:44px;height:5px;border-radius:999px;
+    background: rgba(0,0,0,.16);
+    margin:6px auto 10px;
+  }
+  .sheetTop{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;
+    padding:4px 4px 10px;
+  }
+  .sheetTop b{font-weight:1200}
+  .x{
+    border:1px solid rgba(0,0,0,.12);
+    background: rgba(255,255,255,.70);
+    border-radius:12px;
+    padding:10px 12px;
+    font-weight:1100;
+    cursor:pointer;
+  }
+
+  .hud{
+    display:flex;gap:10px;flex-wrap:wrap;
+    align-items:center;justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 10px;
+    border-radius:999px;
+    border:1px solid rgba(0,0,0,.10);
+    background: rgba(0,0,0,.03);
+    font-weight:1000;
+    color:var(--muted);
+    font-size:12px;
+    white-space:nowrap;
+  }
+
+  .bar{
+    height:10px;
+    border-radius:999px;
+    background: rgba(0,0,0,.08);
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  .bar i{
+    display:block;height:100%;
+    width:100%;
+    background: linear-gradient(90deg, rgba(0,198,255,.95), rgba(124,77,255,.95));
+    transform-origin:left;
+    transform:scaleX(1);
+  }
+
+  .seq{
+    display:flex;flex-wrap:wrap;gap:8px;
+    padding:10px;
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.10);
+    background: rgba(0,0,0,.03);
+    margin-bottom:10px;
+  }
+  .seal{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(0,0,0,.10);
+    background: rgba(255,255,255,.80);
+    font-weight:1200;
+    min-width:76px;
+    user-select:none;
+  }
+  .seal small{font-size:11px;color:rgba(0,0,0,.45);font-weight:900}
+  .seal.done{background:rgba(18,185,129,.12);border-color:rgba(18,185,129,.22)}
+  .seal.bad{background:rgba(255,77,109,.12);border-color:rgba(255,77,109,.22)}
+
+  .pad{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:10px;
+  }
+  .pad button{
+    border:1px solid rgba(0,0,0,.12);
+    background: rgba(255,255,255,.90);
+    border-radius:18px;
+    padding:14px 10px;
+    font-weight:1200;
+    cursor:pointer;
+    min-height:56px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .12s ease, background .12s ease;
+  }
+  .pad button:active{transform:scale(.98)}
+  .pad button.hit{background: rgba(0,198,255,.12); border-color: rgba(0,198,255,.22)}
+  .pad button.wrong{background: rgba(255,77,109,.12); border-color: rgba(255,77,109,.22)}
+
+  .msg{
+    margin-top:10px;
+    padding:10px;
+    border-radius:16px;
+    border:1px solid rgba(0,0,0,.10);
+    background: rgba(255,255,255,.85);
+    font-weight:950;
+    line-height:1.5;
+    font-size:13px;
+  }
+  .msg.good{border-color:rgba(18,185,129,.22);background:rgba(18,185,129,.10)}
+  .msg.bad{border-color:rgba(255,77,109,.22);background:rgba(255,77,109,.10)}
+
+  .sheetActions{
+    margin-top:10px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+  }
+  .sheetActions .btn{padding:13px 12px;border-radius:16px}
+
+  /* Desktop improvements (still minimal) */
+  @media (min-width: 860px){
+    .wrap{padding:22px}
+    .body{grid-template-columns: 1.05fr .95fr}
+    .left{padding:22px 22px 20px}
+    .right{border-top:none;border-left:1px solid rgba(0,0,0,.06);padding:18px}
+    h1{font-size:44px}
+    .actions{
+      grid-template-columns: 1fr 1fr;
+    }
+    .miniStats{grid-template-columns: 1.2fr .8fr}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .aura,.sigil svg{animation:none}
+  }
+</style>
+</head>
+
+<body>
+  <div class="paper"></div>
+  <canvas id="fx"></canvas>
+
+  <div class="wrap">
+    <main class="card">
+      <header class="top">
+        <div class="brand"><span class="dot"></span><span>AeroWebAI</span></div>
+        <div class="miniRight">
+          <div class="pill" title="Hand-Seal opens portal"><i></i><span id="pillText">CHAKRA</span></div>
+        </div>
+      </header>
+
+      <section class="body">
+        <section class="left">
+          <div class="badge"><span></span> 404</div>
+
+          <h1 id="h">Scroll not found 🌀</h1>
+          <div class="oneLine" id="sub">Return home, or open a portal.</div>
+
+          <div class="miniStats">
+            <div class="box">
+              <div class="k">Path</div>
+              <div class="v" id="path">/</div>
+            </div>
+            <div class="box">
+              <div class="k">Suggestion</div>
+              <div class="v" id="suggest">Home</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a class="btn primary" id="homeBtn" href="/">🌀 Home</a>
+            <button class="btn" id="sealBtn" type="button">🤜🤛 Seals</button>
+            <a class="btn" id="toolBtn" href="/pdf-maker/">📜 Tools</a>
+            <button class="btn" id="scanBtn" type="button">🔍 Scan</button>
+          </div>
+        </section>
+
+        <aside class="right">
+          <div class="hero">
+            <div class="aura"></div>
+            <div class="sigil" aria-hidden="true">
+              <!-- Original abstract ninja emblem (no copyrighted art) -->
+              <svg viewBox="0 0 420 260" fill="none">
+                <circle cx="210" cy="150" r="88" stroke="rgba(0,198,255,.55)" stroke-width="10" opacity=".55"/>
+                <circle cx="210" cy="150" r="126" stroke="rgba(124,77,255,.32)" stroke-width="8" opacity=".35"/>
+
+                <!-- Headband -->
+                <rect x="110" y="34" width="200" height="54" rx="18" fill="rgba(255,255,255,.55)" stroke="rgba(0,0,0,.12)"/>
+                <rect x="125" y="50" width="170" height="22" rx="11" fill="rgba(0,0,0,.06)"/>
+                <circle cx="135" cy="61" r="4" fill="rgba(0,0,0,.25)"/>
+                <circle cx="285" cy="61" r="4" fill="rgba(0,0,0,.25)"/>
+
+                <!-- Spiral emblem (original abstract swirl) -->
+                <path d="M246 150c0 28-22 50-50 50s-50-22-50-50 22-50 50-50c16 0 29 5 38 14"
+                      stroke="rgba(0,0,0,.42)" stroke-width="10" stroke-linecap="round"/>
+                <path d="M240 112c18 15 30 38 30 64 0 46-37 83-83 83-28 0-53-14-68-35"
+                      stroke="rgba(0,0,0,.20)" stroke-width="8" stroke-linecap="round"/>
+                <path d="M232 165c-6 10-17 16-29 16-19 0-34-15-34-34s15-34 34-34"
+                      stroke="rgba(0,198,255,.34)" stroke-width="8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <!-- Bottom-sheet mini game -->
+  <div class="sheetBackdrop" id="backdrop" aria-hidden="true"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Hand-Seal Challenge">
+    <div class="grab" aria-hidden="true"></div>
+    <div class="sheetTop">
+      <b>Hand-Seal</b>
+      <button class="x" id="closeSheet" type="button">✕</button>
+    </div>
+
+    <div class="hud">
+      <div class="chip">Jutsu: <b id="jutsu">—</b></div>
+      <div class="chip">Step: <b id="step">0</b>/<span id="total">0</span></div>
+      <div class="chip">Time: <b id="time">0.0</b>s</div>
+    </div>
+
+    <div class="bar"><i id="fill"></i></div>
+
+    <div class="seq" id="seq" aria-label="Sequence"></div>
+    <div class="pad" id="pad" aria-label="Seal Pad"></div>
+
+    <div class="msg" id="msg">Tap <b>Start</b>, then follow the sequence.</div>
+
+    <div class="sheetActions">
+      <button class="btn" id="start" type="button">▶ Start</button>
+      <button class="btn primary" id="retry" type="button">🔁 Retry</button>
+    </div>
+  </section>
+
+<script>
+(() => {
+  const $ = (id)=>document.getElementById(id);
+
+  /* If you host on GitHub project pages, set BASE="/repo" else "" */
+  const BASE = "";
+
+  // Fix absolute links when BASE is set
+  document.querySelectorAll('a[href^="/"]').forEach(a=>{
+    const h=a.getAttribute("href");
+    if(h) a.setAttribute("href", BASE + h);
+  });
+
+  const path = location.pathname || "/";
+  $("path").textContent = path.length > 42 ? path.slice(0,42)+"…" : path;
+
+  // Suggest best tool based on broken path
+  function suggestFromPath(p){
+    const low=(p||"").toLowerCase();
+    const map=[
+      {k:["pdf-image","pdf-to-image"], href:"/pdf-image/", name:"PDF → Image"},
+      {k:["image-to-pdf","jpg","png","to-pdf"], href:"/image-to-pdf/", name:"Image → PDF"},
+      {k:["merge"], href:"/merge-pdf/", name:"Merge PDF"},
+      {k:["compress"], href:"/compress-pdf/", name:"Compress PDF"},
+      {k:["image","compressor"], href:"/image-compressor/", name:"Image Compress"},
+      {k:["pdf"], href:"/pdf-maker/", name:"PDF Tools"}
+    ];
+    for(const m of map){
+      if(m.k.some(x=>low.includes(x))) return m;
+    }
+    return {href:"/", name:"Home"};
+  }
+
+  const sug = suggestFromPath(path);
+  $("suggest").textContent = sug.name;
+
+  // Minimal scan: just update suggestion & micro feedback
+  $("scanBtn").addEventListener("click", ()=>{
+    $("pillText").textContent = "SCANNING…";
+    setTimeout(()=>{
+      $("pillText").textContent = "CHAKRA";
+      const s = suggestFromPath(path);
+      $("suggest").textContent = s.name;
+      $("toolBtn").setAttribute("href", BASE + s.href);
+    }, 420);
+  });
+
+  // Set Tools button to suggestion (smarter default)
+  $("toolBtn").setAttribute("href", BASE + sug.href);
+
+  // ===== Hand-seal bottom sheet =====
+  const backdrop=$("backdrop");
+  const sheet=$("sheet");
+  const openBtn=$("sealBtn");
+  const closeBtn=$("closeSheet");
+
+  function openSheet(){
+    backdrop.classList.add("show");
+    sheet.classList.add("show");
+    backdrop.style.display="block";
+    document.body.style.overflow="hidden";
+  }
+  function closeSheet(){
+    sheet.classList.remove("show");
+    backdrop.classList.remove("show");
+    setTimeout(()=>{ backdrop.style.display="none"; }, 150);
+    document.body.style.overflow="";
+    stopTimer();
+    running=false;
+    $("start").disabled=false;
+    $("start").textContent="▶ Start";
+  }
+
+  openBtn.addEventListener("click", openSheet);
+  closeBtn.addEventListener("click", closeSheet);
+  backdrop.addEventListener("click", closeSheet);
+  addEventListener("keydown",(e)=>{ if(e.key==="Escape" && sheet.classList.contains("show")) closeSheet(); });
+
+  // ===== Mini game =====
+  const SEALS = [
+    {k:"Dragon", e:"🐉"}, {k:"Serpent", e:"🐍"}, {k:"Tiger", e:"🐯"},
+    {k:"Ram", e:"🐏"}, {k:"Monkey", e:"🐒"}, {k:"Boar", e:"🐗"},
+    {k:"Horse", e:"🐴"}, {k:"Bird", e:"🐦"}, {k:"Dog", e:"🐶"},
+    {k:"Ox", e:"🐂"}, {k:"Hare", e:"🐇"}, {k:"Rat", e:"🐀"}
+  ];
+
+  const JUTSU = [
+    {name:"Shadow Clone", len:[4,6], time:6.6},
+    {name:"Rasengan Spin", len:[5,7], time:7.2},
+    {name:"Summon Portal", len:[5,7], time:7.0}
+  ];
+
+  const seqEl=$("seq");
+  const padEl=$("pad");
+  const msg=$("msg");
+  const stepEl=$("step");
+  const totalEl=$("total");
+  const timeEl=$("time");
+  const fill=$("fill");
+  const jutsuEl=$("jutsu");
+  const startBtn=$("start");
+  const retryBtn=$("retry");
+
+  let seq=[], idx=0, running=false, tLeft=0, tTotal=0, timer=null;
+
+  function stopTimer(){ if(timer){ clearInterval(timer); timer=null; } }
+
+  function pickUnique(n){
+    const pool=SEALS.slice();
+    const out=[];
+    for(let i=0;i<n;i++){
+      const r=Math.floor(Math.random()*pool.length);
+      out.push(pool.splice(r,1)[0]);
+    }
+    return out;
+  }
+
+  function setMsg(type, html){
+    msg.className="msg" + (type ? (" "+type) : "");
+    msg.innerHTML=html;
+  }
+
+  function renderSeq(){
+    seqEl.innerHTML="";
+    seq.forEach((s,i)=>{
+      const d=document.createElement("div");
+      d.className="seal" + (i<idx ? " done" : "");
+      d.innerHTML = `<span style="font-size:20px">${s.e}</span><small>${s.k}</small>`;
+      seqEl.appendChild(d);
+    });
+  }
+
+  function buildPad(){
+    padEl.innerHTML="";
+    SEALS.forEach(s=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.innerHTML = `<span style="font-size:22px">${s.e}</span><span>${s.k}</span>`;
+      b.dataset.k=s.k;
+      b.addEventListener("click", ()=>tap(s.k, b));
+      padEl.appendChild(b);
+    });
+  }
+
+  function flash(btn, cls){
+    btn.classList.add(cls);
+    setTimeout(()=>btn.classList.remove(cls), 170);
+  }
+
+  function newRound(){
+    stopTimer();
+    running=false;
+    startBtn.disabled=false;
+    startBtn.textContent="▶ Start";
+
+    const j=JUTSU[Math.floor(Math.random()*JUTSU.length)];
+    const len=j.len[0] + Math.floor(Math.random()*(j.len[1]-j.len[0]+1));
+    seq=pickUnique(len);
+    idx=0;
+
+    tTotal = j.time + Math.max(0, len-5)*0.6;
+    tLeft = tTotal;
+
+    jutsuEl.textContent=j.name;
+    stepEl.textContent="0";
+    totalEl.textContent=String(seq.length);
+    timeEl.textContent=tLeft.toFixed(1);
+    fill.style.transform="scaleX(1)";
+
+    renderSeq();
+    setMsg("", `Tap <b>Start</b> → then follow seals.`);
+  }
+
+  function start(){
+    if(running) return;
+    running=true;
+    startBtn.disabled=true;
+    startBtn.textContent="⏳";
+
+    setMsg("", `Next: <b>${seq[idx].k}</b>`);
+    timer=setInterval(()=>{
+      tLeft-=0.1;
+      if(tLeft<0) tLeft=0;
+      timeEl.textContent=tLeft.toFixed(1);
+      fill.style.transform="scaleX("+(tLeft/tTotal).toFixed(3)+")";
+      if(tLeft<=0) fail("Time up");
+    },100);
+  }
+
+  function fail(reason){
+    stopTimer();
+    running=false;
+    startBtn.disabled=false;
+    startBtn.textContent="▶ Start";
+
+    const nodes=[...seqEl.children];
+    if(nodes[idx]) nodes[idx].classList.add("bad");
+    setTimeout(()=>{ if(nodes[idx]) nodes[idx].classList.remove("bad"); }, 320);
+
+    setMsg("bad", `❌ ${reason}. Retry.`);
+  }
+
+  function win(){
+    stopTimer();
+    running=false;
+    startBtn.disabled=true;
+    startBtn.textContent="✅";
+
+    setMsg("good", `✅ Portal open…`);
+    try{ navigator.vibrate && navigator.vibrate([35,60,35]); }catch(e){}
+
+    setTimeout(()=>{ location.href = BASE + "/"; }, 950);
+  }
+
+  function tap(key, btn){
+    if(!running){ flash(btn,"wrong"); setMsg("bad","Tap <b>Start</b>."); return; }
+    const expected=seq[idx].k;
+    if(key===expected){
+      flash(btn,"hit");
+      idx++;
+      stepEl.textContent=String(idx);
+      renderSeq();
+      if(idx>=seq.length) win();
+      else setMsg("", `Next: <b>${seq[idx].k}</b>`);
+    }else{
+      flash(btn,"wrong");
+      fail("Wrong seal");
+    }
+  }
+
+  buildPad();
+  newRound();
+  startBtn.addEventListener("click", start);
+  retryBtn.addEventListener("click", newRound);
+
+  // ===== FX canvas: chakra orbs + falling leaves (lightweight) =====
+  const canvas=$("fx");
+  const ctx=canvas.getContext("2d",{alpha:true});
+  const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let w=0,h=0,dpr=1,parts=[],orbs=[],t=0;
+
+  function resize(){
+    dpr=Math.min(2, devicePixelRatio||1);
+    w=canvas.width=Math.floor(innerWidth*dpr);
+    h=canvas.height=Math.floor(innerHeight*dpr);
+    canvas.style.width=innerWidth+"px";
+    canvas.style.height=innerHeight+"px";
+
+    parts=[];
+    const count=Math.max(26, Math.min(70, Math.floor(innerWidth/16)));
+    for(let i=0;i<count;i++){
+      parts.push({
+        x:Math.random()*w, y:Math.random()*h,
+        s:(Math.random()*1.6+.6)*dpr,
+        a:Math.random()*0.45+.12,
+        vx:(Math.random()*0.35+0.10)*dpr,
+        vy:(Math.random()*0.25+0.08)*dpr,
+        rot:Math.random()*Math.PI,
+        vr:(Math.random()*0.03+0.01)
+      });
+    }
+
+    orbs=[];
+    for(let i=0;i<6;i++){
+      orbs.push({
+        x:(0.14+Math.random()*0.72)*w,
+        y:(0.18+Math.random()*0.62)*h,
+        r:(24+Math.random()*44)*dpr,
+        ph:Math.random()*6.28
+      });
+    }
+  }
+  addEventListener("resize", resize);
+  resize();
+
+  function drawLeaf(p){
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot);
+    ctx.beginPath();
+    ctx.moveTo(0, -2*p.s);
+    ctx.quadraticCurveTo(2.2*p.s, -1.2*p.s, 1.6*p.s, 0);
+    ctx.quadraticCurveTo(0, 2.2*p.s, -1.6*p.s, 0);
+    ctx.quadraticCurveTo(-2.2*p.s, -1.2*p.s, 0, -2*p.s);
+    ctx.closePath();
+    ctx.fillStyle = `rgba(18,185,129,${p.a*0.35})`;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function loop(){
+    if(reduced) return;
+    t+=0.012;
+    ctx.clearRect(0,0,w,h);
+
+    // orbs
+    for(const o of orbs){
+      const x=o.x + Math.sin(t+o.ph)*18*dpr;
+      const y=o.y + Math.cos(t*1.1+o.ph)*14*dpr;
+
+      const g=ctx.createRadialGradient(x,y, 0, x,y, o.r);
+      g.addColorStop(0, "rgba(0,198,255,.16)");
+      g.addColorStop(0.55, "rgba(124,77,255,.10)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle=g;
+      ctx.beginPath();
+      ctx.arc(x,y,o.r,0,Math.PI*2);
+      ctx.fill();
+
+      ctx.strokeStyle="rgba(255,255,255,.07)";
+      ctx.lineWidth=2*dpr;
+      ctx.beginPath();
+      ctx.arc(x,y,o.r*0.65,0,Math.PI*2);
+      ctx.stroke();
+    }
+
+    // leaves
+    for(const p of parts){
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+      if(p.x>w+30) p.x=-30;
+      if(p.y>h+30) p.y=-30;
+      drawLeaf(p);
+    }
+
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

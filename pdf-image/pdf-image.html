@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>PDF to Image (JPG / PNG) — Free Online | AeroWebAI</title>
+<meta name="description" content="Convert PDF to JPG or PNG images online for free. Select pages, set quality, download single pages or all as ZIP. Fast, private, mobile-friendly." />
+<link rel="canonical" href="https://aerowebai.in/pdf-to-image/" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-811VYN24EB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-811VYN24EB');
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>
+  // pdf.js worker
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+</script>
+
+<!-- JSZip (Download all as ZIP) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --blue:#1a73e8;
+    --purple:#673ab7;
+    --line:#e2e8f0;
+    --muted:#64748b;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+    --r:18px;
+    --max:1100px;
+  }
+  body{
+    font-family:Inter,system-ui;
+    background:#f8fafc;
+    color:#0f172a;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:var(--max);margin:auto;padding:16px}
+
+  /* Header */
+  header{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:10;
+  }
+  .head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .brand{
+    display:flex;gap:10px;align-items:center;text-decoration:none;font-weight:950;color:#0f172a;
+  }
+  .logo{
+    width:38px;height:38px;border-radius:12px;
+    background:linear-gradient(135deg,var(--blue),var(--purple));
+    display:grid;place-items:center;color:#fff;
+  }
+  nav{display:flex;gap:8px;overflow:auto;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a{
+    text-decoration:none;padding:7px 12px;border-radius:999px;border:1px solid var(--line);
+    background:#fff;font-weight:800;white-space:nowrap;color:#0f172a;
+  }
+  nav a:hover{border-color:rgba(26,115,232,.35);background:#f1f7ff}
+
+  /* Hero */
+  .hero{
+    background:#fff;border:1px solid var(--line);border-radius:var(--r);
+    margin-top:18px;padding:22px;box-shadow:var(--shadow);
+  }
+  .hero h1{font-size:2rem;font-weight:950;margin-bottom:6px;letter-spacing:-.5px}
+  .hero p{color:var(--muted);font-weight:650;line-height:1.5}
+
+  /* Upload box */
+  .drop{
+    margin-top:18px;background:#fff;border:2px dashed #cbd5e1;border-radius:var(--r);
+    padding:22px;text-align:center;transition:.18s;
+  }
+  .drop.drag{border-color:var(--blue);background:#eff6ff}
+  .drop input{display:none}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--blue);color:#fff;padding:12px 18px;border-radius:999px;
+    font-weight:900;cursor:pointer;border:none;text-decoration:none;
+  }
+  .btn.secondary{
+    background:#fff;color:#0f172a;border:1px solid var(--line);
+  }
+  .btn.secondary:hover{border-color:rgba(26,115,232,.35);background:#f1f7ff}
+  .btn.green{background:#059669}
+  .btn:active{transform:translateY(1px)}
+  .muted{color:var(--muted);font-weight:650}
+
+  /* Controls */
+  .controls{
+    display:none;margin-top:18px;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r);padding:16px;box-shadow:var(--shadow);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1.2fr .9fr .9fr .9fr;
+    gap:12px;
+    align-items:end;
+  }
+  label{display:block;font-size:.85rem;font-weight:900;color:#334155;margin-bottom:6px}
+  select,input[type="text"],input[type="number"]{
+    width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);
+    font-weight:800;outline:none;background:#fff;
+  }
+  .help{font-size:.82rem;color:var(--muted);font-weight:650;margin-top:6px;line-height:1.35}
+  .rowBtns{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 12px;border:1px solid var(--line);border-radius:999px;
+    background:#fff;font-weight:850;color:#0f172a;
+  }
+  .pill .material-icons{font-size:18px;color:var(--blue)}
+  .warn{
+    margin-top:12px;padding:12px;border-radius:14px;
+    border:1px dashed rgba(26,115,232,.28);
+    background:rgba(26,115,232,.06);
+    color:#334155;font-weight:650;line-height:1.5;
+  }
+
+  /* Progress */
+  .progress{display:none;margin-top:12px}
+  .ptext{font-weight:850;margin-bottom:8px}
+  .bar{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+  .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--blue),var(--purple));transition:.18s}
+
+  /* Preview grid */
+  .previewWrap{
+    display:none;
+    margin-top:18px;
+  }
+  .previewHead{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .previewHead h2{font-size:1.1rem;font-weight:950;letter-spacing:-.3px}
+  .actionsRight{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .toggle{
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 12px;
+    font-weight:900;cursor:pointer;user-select:none;
+  }
+  .toggle input{accent-color:var(--blue)}
+  .preview{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
+    gap:14px;
+  }
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:16px;
+    box-shadow:0 8px 18px rgba(0,0,0,.05);
+    overflow:hidden;
+  }
+  .thumb{
+    aspect-ratio: 3/4;
+    background:#f1f5f9;
+    display:grid;place-items:center;
+    position:relative;
+  }
+  .thumb img{max-width:100%;max-height:100%;display:block}
+  .num{
+    position:absolute;left:10px;top:10px;
+    background:rgba(15,23,42,.82);color:#fff;font-weight:950;
+    padding:4px 10px;border-radius:999px;font-size:.82rem;
+  }
+  .chk{
+    position:absolute;right:10px;top:10px;
+    width:22px;height:22px;border-radius:6px;
+    border:2px solid rgba(255,255,255,.95);
+    background:rgba(15,23,42,.25);
+    display:grid;place-items:center;
+    backdrop-filter: blur(6px);
+  }
+  .chk input{width:18px;height:18px;accent-color:var(--blue)}
+  .metaBox{padding:12px}
+  .metaBox b{font-weight:950;display:block}
+  .metaBox small{color:var(--muted);font-weight:650}
+  .cardBtns{
+    display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;
+  }
+  .mini{
+    flex:1;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:9px 10px;border-radius:12px;font-weight:900;text-decoration:none;
+    border:1px solid var(--line);background:#fff;color:#0f172a;
+  }
+  .mini:hover{border-color:rgba(26,115,232,.35);background:#f1f7ff}
+  .mini.green{background:#059669;color:#fff;border-color:transparent}
+  .mini .material-icons{font-size:18px}
+
+  footer{
+    margin-top:26px;border-top:1px solid var(--line);padding:16px 0;
+    color:var(--muted);font-weight:650;font-size:.9rem;
+  }
+
+  @media(max-width:860px){
+    .grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:640px){
+    .hero h1{font-size:1.6rem}
+    .grid{grid-template-columns:1fr}
+  }
+          .mark-logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  object-fit:contain;
+  background:#fff;
+  padding:4px;
+  box-shadow:0 10px 20px rgba(0,0,0,.15);
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="wrap head">
+    <a class="brand" href="/">
+ <img  src="/logo1.png" alt="AeroWebAI Logo" class="mark-logo">
+      AeroWebAI
+    </a>
+    <nav>
+      <a href="/image-to-pdf/">Image→PDF</a>
+      <a href="/image-compressor/">Image Compress</a>
+      <a href="/merge-pdf/">Merge</a>
+      <a href="/split-pdf/">Split</a>
+      <a href="/compress-pdf/">Compress PDF</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>PDF to Image</h1>
+    <p>Convert PDF pages into <b>JPG</b> or <b>PNG</b>. Select pages, set quality, and download single pages or all as ZIP.</p>
+  </section>
+
+  <section class="drop" id="dropBox">
+    <input type="file" id="fileInput" accept="application/pdf">
+    <p style="font-weight:950;margin-bottom:10px">Upload your PDF</p>
+    <label class="btn" for="fileInput">
+      <span class="material-icons">upload_file</span>
+      Select PDF
+    </label>
+    <p class="muted" style="margin-top:10px;font-size:.92rem">or drag & drop here</p>
+  </section>
+
+  <section class="controls" id="controls">
+    <div class="grid">
+      <div>
+        <label for="format">Image format</label>
+        <select id="format">
+          <option value="jpeg">JPG (smaller size)</option>
+          <option value="png">PNG (best clarity)</option>
+        </select>
+        <div class="help">JPG is best for compression. PNG is best for sharp text screenshots.</div>
+      </div>
+
+      <div>
+        <label for="quality">Quality</label>
+        <select id="quality">
+          <option value="0.55">Low</option>
+          <option value="0.75" selected>Medium</option>
+          <option value="0.92">High</option>
+        </select>
+        <div class="help">Used for JPG only.</div>
+      </div>
+
+      <div>
+        <label for="scale">Resolution</label>
+        <select id="scale">
+          <option value="1.25">Normal</option>
+          <option value="1.75" selected>HD</option>
+          <option value="2.25">Ultra</option>
+        </select>
+        <div class="help">Higher = better quality, slower.</div>
+      </div>
+
+      <div>
+        <label for="range">Pages</label>
+        <input id="range" type="text" placeholder="all or 1-3,5,7-9">
+        <div class="help">Examples: <b>all</b> • <b>1-5</b> • <b>2,4,8</b> • <b>1-3,7</b></div>
+      </div>
+    </div>
+
+    <div class="rowBtns">
+      <span class="pill" id="fileMeta"><span class="material-icons">description</span><span>Selected: —</span></span>
+
+      <button class="btn secondary" id="previewBtn" type="button">
+        <span class="material-icons">visibility</span> Build Preview
+      </button>
+
+      <button class="btn" id="convertSelectedBtn" type="button">
+        <span class="material-icons">image</span> Convert Selected
+      </button>
+
+      <button class="btn green" id="zipBtn" type="button">
+        <span class="material-icons">folder_zip</span> Download ZIP (Selected)
+      </button>
+    </div>
+
+    <div class="warn">
+      <b>Tip:</b> Use <b>HD + JPG</b> for best balance. Use <b>PNG</b> only if you need maximum clarity.
+    </div>
+
+    <div class="progress" id="progress">
+      <div class="ptext" id="ptext">Preparing…</div>
+      <div class="bar"><div class="fill" id="fill"></div></div>
+    </div>
+  </section>
+
+  <section class="previewWrap" id="previewWrap">
+    <div class="previewHead">
+      <h2>Preview & Select Pages</h2>
+      <div class="actionsRight">
+        <label class="toggle" title="Select/Deselect all">
+          <input type="checkbox" id="selectAll">
+          Select all
+        </label>
+        <button class="btn secondary" id="clearBtn" type="button">
+          <span class="material-icons">delete_sweep</span> Clear
+        </button>
+      </div>
+    </div>
+
+    <div class="preview" id="preview"></div>
+  </section>
+
+  <footer>© <span id="y"></span> AeroWebAI · aerowebai.in</footer>
+</main>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+
+  const dropBox = document.getElementById("dropBox");
+  const fileInput = document.getElementById("fileInput");
+
+  const controls = document.getElementById("controls");
+  const fileMeta = document.getElementById("fileMeta").querySelector("span:last-child");
+
+  const formatEl = document.getElementById("format");
+  const qualityEl = document.getElementById("quality");
+  const scaleEl = document.getElementById("scale");
+  const rangeEl = document.getElementById("range");
+
+  const previewBtn = document.getElementById("previewBtn");
+  const convertSelectedBtn = document.getElementById("convertSelectedBtn");
+  const zipBtn = document.getElementById("zipBtn");
+  const clearBtn = document.getElementById("clearBtn");
+
+  const progress = document.getElementById("progress");
+  const fill = document.getElementById("fill");
+  const ptext = document.getElementById("ptext");
+
+  const previewWrap = document.getElementById("previewWrap");
+  const preview = document.getElementById("preview");
+  const selectAll = document.getElementById("selectAll");
+
+  let currentFile = null;
+  let pdfDoc = null;
+  let pdfBytes = null;
+  let pageCount = 0;
+
+  // Store preview canvases / thumbnails so we can reuse without rerender when downloading single
+  // We'll keep small thumbnails for UI; for export we re-render at chosen scale for best quality.
+  const selectedPages = new Set(); // 1-based page numbers
+  const thumbUrls = new Map();     // pageNo -> dataURL (small thumb)
+
+  function fmtMB(bytes){ return (bytes/1024/1024).toFixed(2) + " MB"; }
+  function setProg(p, msg){
+    progress.style.display = "block";
+    fill.style.width = Math.max(0, Math.min(100, p)) + "%";
+    ptext.textContent = msg || "Working…";
+  }
+  function endProg(){
+    progress.style.display = "none";
+    fill.style.width = "0%";
+  }
+
+  function parseRange(str, max){
+    const s = (str || "").trim().toLowerCase();
+    if(!s || s === "all") return Array.from({length:max}, (_,i)=>i+1);
+
+    const pages = new Set();
+    const parts = s.split(",").map(x=>x.trim()).filter(Boolean);
+
+    for(const part of parts){
+      if(part.includes("-")){
+        const [aRaw,bRaw] = part.split("-").map(x=>x.trim());
+        const a = Number(aRaw), b = Number(bRaw);
+        if(!Number.isFinite(a) || !Number.isFinite(b)) continue;
+        const start = Math.min(a,b), end = Math.max(a,b);
+        for(let i=start;i<=end;i++){
+          if(i>=1 && i<=max) pages.add(i);
+        }
+      } else {
+        const n = Number(part);
+        if(Number.isFinite(n) && n>=1 && n<=max) pages.add(n);
+      }
+    }
+    return [...pages].sort((x,y)=>x-y);
+  }
+
+  function getSelectedOrDefault(){
+    if(selectedPages.size > 0) return [...selectedPages].sort((a,b)=>a-b);
+    // if none selected, use range
+    return parseRange(rangeEl.value, pageCount);
+  }
+
+  function resetAll(){
+    currentFile = null;
+    pdfDoc = null;
+    pdfBytes = null;
+    pageCount = 0;
+    selectedPages.clear();
+    thumbUrls.forEach((url)=>{ try{ URL.revokeObjectURL(url); }catch(e){} });
+    thumbUrls.clear();
+
+    controls.style.display = "none";
+    previewWrap.style.display = "none";
+    preview.innerHTML = "";
+    selectAll.checked = false;
+    endProg();
+    fileInput.value = "";
+    fileMeta.textContent = "Selected: —";
+  }
+
+  // Drag & drop visuals
+  ["dragenter","dragover"].forEach(ev=>{
+    dropBox.addEventListener(ev, e=>{
+      e.preventDefault();
+      dropBox.classList.add("drag");
+    });
+  });
+  ["dragleave","drop"].forEach(ev=>{
+    dropBox.addEventListener(ev, e=>{
+      e.preventDefault();
+      dropBox.classList.remove("drag");
+    });
+  });
+  dropBox.addEventListener("drop", (e)=>{
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if(f) handleFile(f);
+  });
+  fileInput.addEventListener("change", (e)=>{
+    const f = e.target.files && e.target.files[0];
+    if(f) handleFile(f);
+  });
+
+  async function handleFile(f){
+    if(!f || f.type !== "application/pdf"){
+      alert("Please select a PDF file.");
+      return;
+    }
+    resetAll();
+    currentFile = f;
+    fileMeta.textContent = `Selected: ${f.name} • ${fmtMB(f.size)}`;
+
+    controls.style.display = "block";
+
+    setProg(6, "Loading PDF…");
+    pdfBytes = await f.arrayBuffer();
+
+    // Use pdf.js
+    const loadingTask = pdfjsLib.getDocument({ data: pdfBytes });
+    pdfDoc = await loadingTask.promise;
+    pageCount = pdfDoc.numPages;
+
+    setProg(18, `PDF loaded • ${pageCount} pages`);
+    setTimeout(endProg, 250);
+  }
+
+  // Build preview thumbnails
+  previewBtn.addEventListener("click", async ()=>{
+    if(!pdfDoc) return;
+
+    previewWrap.style.display = "block";
+    preview.innerHTML = "";
+    thumbUrls.clear();
+    selectedPages.clear();
+    selectAll.checked = false;
+
+    const pagesToShow = parseRange(rangeEl.value, pageCount);
+
+    if(pagesToShow.length === 0){
+      alert("Invalid page range.");
+      return;
+    }
+
+    // Render small thumbnails quickly
+    setProg(5, "Building preview…");
+
+    for(let idx=0; idx<pagesToShow.length; idx++){
+      const pageNo = pagesToShow[idx];
+      const page = await pdfDoc.getPage(pageNo);
+
+      // Small thumb scale for speed
+      const viewport = page.getViewport({ scale: 0.6 });
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { alpha:false });
+
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      // Make a thumb dataURL (png for UI)
+      const dataURL = canvas.toDataURL("image/png", 0.92);
+      thumbUrls.set(pageNo, dataURL);
+
+      // Create card
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+
+      const num = document.createElement("div");
+      num.className = "num";
+      num.textContent = `Page ${pageNo}`;
+
+      const chkWrap = document.createElement("div");
+      chkWrap.className = "chk";
+      const chk = document.createElement("input");
+      chk.type = "checkbox";
+      chk.checked = true;
+      selectedPages.add(pageNo);
+
+      chk.addEventListener("change", ()=>{
+        if(chk.checked) selectedPages.add(pageNo);
+        else selectedPages.delete(pageNo);
+
+        // sync select-all
+        selectAll.checked = selectedPages.size === pagesToShow.length;
+      });
+
+      chkWrap.appendChild(chk);
+
+      const img = document.createElement("img");
+      img.src = dataURL;
+      img.alt = `PDF page ${pageNo} preview`;
+
+      thumb.appendChild(img);
+      thumb.appendChild(num);
+      thumb.appendChild(chkWrap);
+
+      const metaBox = document.createElement("div");
+      metaBox.className = "metaBox";
+      const b = document.createElement("b");
+      b.textContent = `Page ${pageNo}`;
+      const s = document.createElement("small");
+      s.textContent = "Tap checkbox to select";
+
+      const cardBtns = document.createElement("div");
+      cardBtns.className = "cardBtns";
+
+      const dlOne = document.createElement("a");
+      dlOne.className = "mini green";
+      dlOne.href = "javascript:void(0)";
+      dlOne.innerHTML = `<span class="material-icons">download</span> Download`;
+
+      dlOne.addEventListener("click", async ()=>{
+        // Export this single page at selected settings
+        await exportSingle(pageNo);
+      });
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "mini";
+      toggle.innerHTML = `<span class="material-icons">check_circle</span> Toggle`;
+
+      toggle.addEventListener("click", ()=>{
+        chk.checked = !chk.checked;
+        chk.dispatchEvent(new Event("change"));
+      });
+
+      cardBtns.appendChild(dlOne);
+      cardBtns.appendChild(toggle);
+
+      metaBox.appendChild(b);
+      metaBox.appendChild(s);
+      metaBox.appendChild(cardBtns);
+
+      card.appendChild(thumb);
+      card.appendChild(metaBox);
+
+      preview.appendChild(card);
+
+      const prog = 10 + Math.floor(((idx+1)/pagesToShow.length)*85);
+      setProg(prog, `Preview ${idx+1}/${pagesToShow.length}`);
+    }
+
+    selectAll.checked = true;
+    endProg();
+  });
+
+  // Select all toggle
+  selectAll.addEventListener("change", ()=>{
+    const cards = preview.querySelectorAll(".chk input[type='checkbox']");
+    cards.forEach((c)=>{
+      c.checked = selectAll.checked;
+      c.dispatchEvent(new Event("change"));
+    });
+  });
+
+  clearBtn.addEventListener("click", ()=>{
+    resetAll();
+  });
+
+  function getExportSettings(){
+    const fmt = formatEl.value; // jpeg|png
+    const q = Math.max(0.1, Math.min(1, parseFloat(qualityEl.value || "0.75")));
+    const sc = Math.max(0.6, Math.min(3, parseFloat(scaleEl.value || "1.75")));
+    return { fmt, q, sc };
+  }
+
+  async function renderPageToDataURL(pageNo, fmt, q, sc){
+    const page = await pdfDoc.getPage(pageNo);
+    const viewport = page.getViewport({ scale: sc });
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d", { alpha:false });
+
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+
+    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    let dataURL;
+    if(fmt === "png"){
+      dataURL = canvas.toDataURL("image/png"); // no quality param
+    } else {
+      dataURL = canvas.toDataURL("image/jpeg", q);
+    }
+
+    // free memory
+    canvas.width = 1; canvas.height = 1;
+    return dataURL;
+  }
+
+  function dataURLToUint8(dataURL){
+    const base64 = dataURL.split(",")[1];
+    const bin = atob(base64);
+    const len = bin.length;
+    const bytes = new Uint8Array(len);
+    for(let i=0;i<len;i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+
+  function triggerDownloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  }
+
+  async function exportSingle(pageNo){
+    if(!pdfDoc) return;
+    const { fmt, q, sc } = getExportSettings();
+
+    setProg(10, `Exporting page ${pageNo}…`);
+    const dataURL = await renderPageToDataURL(pageNo, fmt, q, sc);
+    setProg(85, `Preparing download…`);
+
+    const bytes = dataURLToUint8(dataURL);
+    const mime = fmt === "png" ? "image/png" : "image/jpeg";
+    const ext = fmt === "png" ? "png" : "jpg";
+
+    const blob = new Blob([bytes], { type: mime });
+    triggerDownloadBlob(blob, `${safeBaseName(currentFile?.name)}-page-${pageNo}.${ext}`);
+
+    endProg();
+  }
+
+  function safeBaseName(name){
+    const n = (name || "pdf").replace(/\.pdf$/i,"");
+    return n.replace(/[^\w\-]+/g,"-").replace(/\-+/g,"-").replace(/^\-|\-$/g,"");
+  }
+
+  // Convert Selected (downloads one-by-one). Best for small selections.
+  convertSelectedBtn.addEventListener("click", async ()=>{
+    if(!pdfDoc) return;
+
+    const pages = getSelectedOrDefault();
+    if(pages.length === 0){
+      alert("No pages selected.");
+      return;
+    }
+
+    const { fmt, q, sc } = getExportSettings();
+    const ext = fmt === "png" ? "png" : "jpg";
+    const mime = fmt === "png" ? "image/png" : "image/jpeg";
+    const base = safeBaseName(currentFile?.name);
+
+    for(let i=0;i<pages.length;i++){
+      const pageNo = pages[i];
+      const pct = 10 + Math.floor(((i+1)/pages.length)*80);
+      setProg(pct, `Converting ${i+1}/${pages.length} (page ${pageNo})…`);
+
+      const dataURL = await renderPageToDataURL(pageNo, fmt, q, sc);
+      const bytes = dataURLToUint8(dataURL);
+      const blob = new Blob([bytes], { type: mime });
+
+      triggerDownloadBlob(blob, `${base}-page-${pageNo}.${ext}`);
+
+      // small pause for mobile download dialogs
+      await new Promise(r=>setTimeout(r, 250));
+    }
+
+    endProg();
+  });
+
+  // Download ZIP (Selected) — best for many pages
+  zipBtn.addEventListener("click", async ()=>{
+    if(!pdfDoc) return;
+
+    const pages = getSelectedOrDefault();
+    if(pages.length === 0){
+      alert("No pages selected.");
+      return;
+    }
+
+    const { fmt, q, sc } = getExportSettings();
+    const ext = fmt === "png" ? "png" : "jpg";
+    const base = safeBaseName(currentFile?.name);
+
+    const zip = new JSZip();
+    const folder = zip.folder(`${base}-${fmt}`);
+
+    for(let i=0;i<pages.length;i++){
+      const pageNo = pages[i];
+      const pct = 10 + Math.floor(((i+1)/pages.length)*75);
+      setProg(pct, `Adding to ZIP ${i+1}/${pages.length} (page ${pageNo})…`);
+
+      const dataURL = await renderPageToDataURL(pageNo, fmt, q, sc);
+      const bytes = dataURLToUint8(dataURL);
+
+      folder.file(`${base}-page-${pageNo}.${ext}`, bytes);
+    }
+
+    setProg(92, "Building ZIP…");
+    const zipBlob = await zip.generateAsync({ type:"blob", compression:"DEFLATE", compressionOptions:{ level:6 } });
+
+    setProg(98, "Downloading…");
+    triggerDownloadBlob(zipBlob, `${base}-${fmt}-images.zip`);
+    endProg();
+  });
+</script>
+</body>
+</html>

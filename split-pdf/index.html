@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Split PDF Online (Free) — AeroWebAI</title>
+<meta name="description" content="Split PDF online for free. Extract pages or split PDF by range. No upload, mobile-friendly." />
+<link rel="canonical" href="https://aerowebai.in/split-pdf/" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-811VYN24EB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-811VYN24EB');
+</script>
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --blue:#1a73e8;
+  --line:#e2e8f0;
+  --muted:#64748b;
+  --shadow:0 10px 30px rgba(0,0,0,.08);
+  --r:18px;
+  --max:980px;
+}
+
+body{
+  font-family:Inter,system-ui;
+  background:#f8fafc;
+  color:#0f172a;
+  min-height:100vh;
+}
+
+.wrap{max-width:var(--max);margin:auto;padding:16px}
+
+/* Header */
+header{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:10;
+}
+.head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.brand{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  text-decoration:none;
+  font-weight:900;
+}
+.logo{
+  width:38px;height:38px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#1a73e8,#673ab7);
+  display:grid;place-items:center;
+  color:#fff;
+}
+nav{display:flex;gap:8px;overflow:auto}
+nav a{
+  text-decoration:none;
+  padding:7px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:#fff;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+/* Hero */
+.hero{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  margin-top:18px;
+  padding:22px;
+  box-shadow:var(--shadow);
+}
+.hero h1{font-size:2rem;font-weight:900;margin-bottom:6px}
+.hero p{color:var(--muted);font-weight:600}
+
+/* Upload */
+.box{
+  background:#fff;
+  border:2px dashed #cbd5e1;
+  border-radius:var(--r);
+  margin-top:18px;
+  padding:26px;
+  text-align:center;
+}
+.box input{display:none}
+
+.upload-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--blue);
+  color:#fff;
+  padding:14px 22px;
+  border-radius:999px;
+  font-weight:800;
+  cursor:pointer;
+  border:none;
+}
+
+/* Controls */
+.controls{
+  display:none;
+  margin-top:18px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:18px;
+  box-shadow:var(--shadow);
+}
+
+label{
+  font-weight:800;
+  display:block;
+  margin:12px 0 6px;
+}
+
+input[type=text]{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  font-weight:700;
+}
+
+.note{
+  font-size:.85rem;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* Result */
+.result{
+  display:none;
+  margin-top:18px;
+  background:#ecfeff;
+  border:1px solid #67e8f9;
+  border-radius:var(--r);
+  padding:18px;
+  text-align:center;
+}
+
+.download{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  background:#059669;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:999px;
+  font-weight:900;
+  text-decoration:none;
+  margin-top:12px;
+}
+
+/* Footer */
+footer{
+  margin-top:30px;
+  border-top:1px solid var(--line);
+  padding:16px 0;
+  color:var(--muted);
+  font-weight:600;
+  font-size:.9rem;
+}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.6rem}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap head">
+    <a class="brand" href="/">
+      <img  src="/logo1.png" alt="AeroWebAI Logo" class="mark-logo"  background="#fff"  padding="4px" width="44px" height="44px"  border-radius="12px"   object-fit="contain" box-shadow="0 10px 20px rgba(0,0,0,.15)">
+      <div>AerowebAi</div>
+     
+    </a>
+
+    <nav>
+      <a href="/image-to-pdf/">Image→PDF</a>
+      <a href="/image-compressor/">Compress</a>
+      <a href="/merge-pdf/">Merge</a>
+      <a href="/remove-pdf-password/">Unlock</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Split PDF Online</h1>
+  <p>Extract pages or split PDF by range. 100% free and private.</p>
+</section>
+
+<!-- Upload -->
+<section class="box">
+  <input type="file" id="fileInput" accept="application/pdf" />
+
+  <p style="font-weight:800;margin-bottom:12px">
+    Upload your PDF
+  </p>
+
+  <label class="upload-btn" for="fileInput">
+    <span class="material-icons">upload_file</span>
+    Select PDF
+  </label>
+</section>
+
+<!-- Controls -->
+<section class="controls" id="controls">
+
+  <p id="meta" style="font-weight:700"></p>
+
+  <label>Page Range</label>
+  <input id="range" type="text" placeholder="Example: 1-3,5,7-9" />
+
+  <div class="note">
+    Use commas and hyphens. Example: 1-3,5,8-10
+  </div>
+
+  <button id="splitBtn" class="upload-btn" style="margin-top:16px;width:100%">
+    <span class="material-icons">call_split</span>
+    Split PDF
+  </button>
+
+</section>
+
+<!-- Result -->
+<section class="result" id="result">
+  <h3>PDF Split Successfully ✅</h3>
+
+  <p id="stats"></p>
+
+  <a id="downloadBtn" class="download" download>
+    <span class="material-icons">download</span>
+    Download PDF
+  </a>
+</section>
+
+<footer>
+  © <span id="y"></span> AeroWebAI · aerowebai.in
+</footer>
+
+</main>
+
+<script>
+document.getElementById("y").textContent=new Date().getFullYear();
+
+const input=document.getElementById("fileInput");
+const controls=document.getElementById("controls");
+const splitBtn=document.getElementById("splitBtn");
+const result=document.getElementById("result");
+const stats=document.getElementById("stats");
+const download=document.getElementById("downloadBtn");
+const meta=document.getElementById("meta");
+const rangeInput=document.getElementById("range");
+
+let file=null;
+
+/* File select */
+input.addEventListener("change",e=>{
+  file=e.target.files[0];
+  if(file){
+    controls.style.display="block";
+    result.style.display="none";
+    meta.textContent=`Selected: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+  }
+});
+
+/* Parse ranges */
+function parseRange(str,max){
+  let pages=new Set();
+
+  str.split(",").forEach(part=>{
+    part=part.trim();
+
+    if(part.includes("-")){
+      let [a,b]=part.split("-").map(Number);
+      if(!a||!b) return;
+
+      for(let i=a;i<=b;i++){
+        if(i>=1 && i<=max) pages.add(i);
+      }
+
+    }else{
+      let n=Number(part);
+      if(n>=1 && n<=max) pages.add(n);
+    }
+  });
+
+  return [...pages].sort((a,b)=>a-b);
+}
+
+/* Split */
+splitBtn.addEventListener("click",async()=>{
+
+  if(!file) return;
+
+  const range=rangeInput.value.trim();
+
+  if(!range){
+    alert("Please enter page range");
+    return;
+  }
+
+  try{
+
+    const buf=await file.arrayBuffer();
+    const src=await PDFLib.PDFDocument.load(buf);
+
+    const total=src.getPageCount();
+
+    const pages=parseRange(range,total);
+
+    if(pages.length===0){
+      alert("Invalid page range");
+      return;
+    }
+
+    const out=await PDFLib.PDFDocument.create();
+
+    const copied=await out.copyPages(
+      src,
+      pages.map(p=>p-1)
+    );
+
+    copied.forEach(p=>out.addPage(p));
+
+    const bytes=await out.save();
+
+    const blob=new Blob([bytes],{type:"application/pdf"});
+    const url=URL.createObjectURL(blob);
+
+    download.href=url;
+    download.download="split-"+file.name;
+
+    stats.innerHTML=`
+      Total pages: <b>${total}</b><br>
+      Extracted: <b>${pages.join(", ")}</b>
+    `;
+
+    result.style.display="block";
+
+  }catch(err){
+    console.error(err);
+    alert("Failed to split PDF");
+  }
+
+});
+</script>
+
+</body>
+</html>
