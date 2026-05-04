@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /
+
+# Block common junk / private files (optional but recommended)
+Disallow: /_redirects
+Disallow: /netlify.toml
+Disallow: /site.webmanifest
+Disallow: /android-chrome-192x192.png
+Disallow: /android-chrome-512x512.png
+Disallow: /apple-touch-icon.png
+Disallow: /favicon-16x16.png
+Disallow: /favicon-32x32.png
+Disallow: /favicon.ico
+Disallow: /logo.png
+Disallow: /logo1.png
+
+# If you ever add admin/private folders, keep them blocked:
+Disallow: /admin/
+Disallow: /private/
+Disallow: /tmp/
+
+# Sitemap location
+Sitemap: https://aerowebai.in/sitemap.xml

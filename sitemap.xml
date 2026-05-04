@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://aerowebai.in/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://aerowebai.in/blog/</loc>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Image Tools -->
+  <url><loc>https://aerowebai.in/image-compressor/</loc></url>
+  <url><loc>https://aerowebai.in/photo-compressor/</loc></url>
+  <url><loc>https://aerowebai.in/compress-image-online/</loc></url>
+  <url><loc>https://aerowebai.in/reduce-image-size/</loc></url>
+  <url><loc>https://aerowebai.in/resize-image-kb/</loc></url>
+  <url><loc>https://aerowebai.in/compress-photo-to-50kb/</loc></url>
+
+  <!-- Image to PDF -->
+  <url><loc>https://aerowebai.in/image-to-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/jpg-to-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/jpeg-to-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/png-to-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/pdf-image/</loc></url>
+
+  <!-- PDF Tools -->
+  <url><loc>https://aerowebai.in/merge-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/combine-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/join-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/merge-pdf-online/</loc></url>
+  <url><loc>https://aerowebai.in/pdf-joiner/</loc></url>
+  <url><loc>https://aerowebai.in/pdf-merger-free/</loc></url>
+  <url><loc>https://aerowebai.in/merge-two-pdf/</loc></url>
+
+  <url><loc>https://aerowebai.in/compress-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/split-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/pdf-maker/</loc></url>
+
+  <url><loc>https://aerowebai.in/remove-pdf-password/</loc></url>
+  <url><loc>https://aerowebai.in/pdf-password-remover/</loc></url>
+  <url><loc>https://aerowebai.in/unlock-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/unlock-pdf-online/</loc></url>
+  <url><loc>https://aerowebai.in/open-locked-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/unprotect-pdf/</loc></url>
+  <url><loc>https://aerowebai.in/decrypt-pdf/</loc></url>
+
+</urlset>

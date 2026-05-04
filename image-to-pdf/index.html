@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Convert JPG to PDF. Images JPG to PDF online</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AeroWebAI" />
+  <meta property="og:title" content="Image to PDF — AeroWebAI" />
+  <meta property="og:description" content="Convert JPG/PNG to PDF in your browser. Reorder, rotate, add margins, download instantly. 100% private." />
+  <meta property="og:url" content="https://aerowebai.in/image-to-pdf/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Image to PDF — AeroWebAI" />
+  <meta name="twitter:description" content="Convert JPG/PNG to PDF in your browser. Reorder, rotate, add margins, download instantly. 100% private." />
+<!-- Google tag (gtag.js) -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-811VYN24EB');
+</script>
+  <link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+  <link rel="canonical" href="https://aerowebai.in/image-to-pdf/" />
+  <meta name="description" content="Convert JPG images to PDF, rotate them or set a page margin. Convert JPG to PDF online, easily and free."/>
+  <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+
+  <!-- libs -->
+  <script src="https://aerowebai.in/assets/vendor/jspdf.umd.min.js"></script>
+  <script src="https://aerowebai.in/assets/vendor/Sortable.min.js"></script>
+
+  <style>
+    :root{
+      /* Google Docs-like theme */
+      --bg:#f8f9fa;
+      --card:#ffffff;
+      --ink:#202124;
+      --muted:#5f6368;
+      --line:#e0e3e7;
+      --shadow: 0 10px 30px rgba(60,64,67,.12);
+      --blue:#1a73e8;
+      --chip:#f1f3f4;
+      --chip2:#eef2f6;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--ink);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    .container{max-width: 1100px; margin:0 auto; padding: 0 18px;}
+
+    /* header */
+    .header{
+      position:fixed; inset:0 0 auto 0;
+      height:64px;
+      background: var(--card);
+      border-bottom:1px solid var(--line);
+      z-index:50;
+    }
+    .header .container{
+      height:100%;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+    }
+    .h-left{display:flex; align-items:center; gap:14px; min-width:0}
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:900; letter-spacing:.2px;
+      min-width:0;
+    }
+    .brand .logo{
+      display:flex; align-items:center; gap:10px;
+      font-size:22px;
+      line-height:1;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .brand .mark{
+      width:34px; height:34px;
+      border-radius:10px;
+      background: var(--blue);
+      display:grid; place-items:center;
+      color:#fff;
+      font-weight:1000;
+      box-shadow: 0 10px 18px rgba(26,115,232,.18);
+    }
+    .brand .text{display:flex; flex-direction:column; line-height:1.05;}
+    .brand .text b{font-size:16px}
+    .brand .text span{font-size:12px; color: var(--muted); font-weight:800}
+
+    .h-right{display:flex; align-items:center; gap:10px}
+    .advbtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      color: var(--ink);
+      font-weight:900;
+      cursor:pointer;
+      box-shadow: 0 8px 16px rgba(60,64,67,.10);
+      white-space:nowrap;
+    }
+    .advbtn:hover{background: var(--chip)}
+    .advbtn:active{transform: translateY(1px)}
+
+    .main{padding-top: 64px; min-height:100%}
+    .hero{padding: 36px 0 22px;}
+    .hero .wrap{text-align:center}
+    h1{margin: 12px 0 0; font-size: clamp(28px, 3.2vw, 44px);}
+    .sub{margin: 0 auto; max-width: 720px; color: var(--muted); font-size: clamp(14px, 1.4vw, 18px); line-height:1.55;}
+
+    /* tool layout */
+    .tool{
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      align-items:start;
+      padding-bottom: 40px;
+    }
+    @media (max-width: 920px){
+      .tool{grid-template-columns: 1fr}
+    }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-body{padding: 18px}
+
+    .drop{
+      position:relative;
+      padding: 22px;
+      border-radius: 18px;
+      border:2px dashed #d2d6dc;
+      background: linear-gradient(180deg, #fff, #fbfbfb);
+      text-align:center;
+      transition: .15s ease;
+      min-height: 220px;
+      display:flex; flex-direction:column; justify-content:center; gap:12px;
+    }
+    .drop.dragover{
+      border-color: var(--blue);
+      box-shadow: 0 0 0 6px rgba(26,115,232,.10);
+      transform: translateY(-1px);
+    }
+
+    .bigbtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding: 18px 22px;
+      border-radius: 14px;
+      border:0;
+      background: var(--blue);
+      color:#fff;
+      font-weight:900;
+      font-size: 18px;
+      cursor:pointer;
+      box-shadow: 0 14px 26px rgba(26,115,232,.22);
+      width:min(520px, 100%);
+      margin: 0 auto;
+    }
+    .bigbtn:active{transform: translateY(1px)}
+    .hint{color: var(--muted); font-size: 13px;}
+    .hint b{color: var(--ink)}
+
+    .thumbs{
+      margin-top: 16px;
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    .thumb{
+      border:1px solid var(--line);
+      border-radius: 16px;
+      overflow:hidden;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      min-height: 180px;
+      position:relative;
+    }
+    .thumb .img{
+      width:100%;
+      height: 130px;
+      background: var(--chip2);
+      display:grid; place-items:center;
+      overflow:hidden;
+      cursor:grab;
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      transform-origin:center;
+      display:block;
+    }
+    .thumb .meta{
+      padding:10px 10px 12px;
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+      justify-content:space-between;
+    }
+    .fname{
+      font-size: 12px;
+      color: var(--muted);
+      line-height:1.3;
+      word-break: break-word;
+      flex:1;
+    }
+    .actions{display:flex; gap:6px; flex-shrink:0;}
+    .iconbtn{
+      width:34px; height:34px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      display:grid; place-items:center;
+    }
+    .iconbtn:hover{background: var(--chip)}
+    .iconbtn:active{transform: translateY(1px)}
+
+    .badge{
+      position:absolute;
+      left:8px;
+      top:8px;
+      z-index:10;
+      min-width: 28px;
+      height: 28px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: rgba(32,33,36,.92);
+      color:#fff;
+      font-weight:1000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:3px solid rgba(255,255,255,.95);
+      font-size: 12px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.16);
+      user-select:none;
+      pointer-events:none;
+    }
+
+    /* sidebar */
+    .side{position: sticky; top: 86px;}
+    .panel-title{font-weight:1000; padding: 16px 18px; border-bottom: 1px solid var(--line); background: #fff;}
+    .panel{padding: 16px 18px; display:grid; gap: 14px}
+    .row{display:grid; gap: 8px}
+    .label{font-size: 13px; color: var(--muted); font-weight:800}
+    .seg{
+      display:flex; gap:8px; padding: 6px;
+      border:1px solid var(--line); background: var(--chip);
+      border-radius: 14px;
+    }
+    .seg button{
+      flex:1; padding: 10px 10px;
+      border-radius: 12px; border:0;
+      background: transparent;
+      cursor:pointer;
+      font-weight:900;
+      color: #3c4043;
+    }
+    .seg button.active{
+      background:#fff;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      color: var(--ink);
+    }
+    select{
+      width:100%;
+      padding: 12px 12px;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      background:#fff;
+      outline:none;
+      color: var(--ink);
+      font-weight:800;
+    }
+    select:focus{
+      border-color: rgba(26,115,232,.55);
+      box-shadow: 0 0 0 4px rgba(26,115,232,.12);
+    }
+    .margins{display:flex; gap:8px;}
+    .pill{
+      flex:1; padding: 10px 10px;
+      border-radius: 999px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      font-weight:900;
+      color:#3c4043;
+      text-align:center;
+    }
+    .pill.active{
+      border-color: rgba(26,115,232,.65);
+      color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(26,115,232,.10)
+    }
+    .check{
+      display:flex; align-items:center; gap:10px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: var(--chip);
+      border:1px solid var(--line);
+    }
+    .check input{width:18px;height:18px; accent-color: var(--blue)}
+    .smallnote{font-size:12px; color: var(--muted); line-height:1.35}
+
+    @media (max-width: 920px){
+      aside.card.side{display:none !important;}
+      .tool{padding-bottom: 110px;}
+    }
+
+    /* floating convert */
+    .convert-float{
+      position: fixed;
+      right: 16px;
+      bottom: 56px;
+      z-index: 80;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:10px;
+      pointer-events:none;
+    }
+    .convert-float .btn{
+      pointer-events:auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border:0;
+      background: var(--blue);
+      color:#fff;
+      font-weight:1000;
+      font-size: 16px;
+      cursor:pointer;
+      box-shadow: 0 14px 26px rgba(26,115,232,.24);
+      min-width: 190px;
+      transform: translateZ(0);
+    }
+    .convert-float .btn:disabled{opacity:.55; cursor:not-allowed; box-shadow:none}
+    .convert-float .arrow{
+      width:28px;height:28px;border-radius:999px;
+      border:2px solid rgba(255,255,255,.70);
+      display:grid; place-items:center;
+    }
+    .convert-float .arrow:before{
+      content:"";
+      width:8px;height:8px;
+      border-right:3px solid #fff;
+      border-top:3px solid #fff;
+      transform: rotate(45deg);
+      margin-left:-2px;
+    }
+
+    .blink{ animation: blinkPulse 1.05s infinite; }
+    @keyframes blinkPulse{
+      0%{ box-shadow: 0 14px 26px rgba(26,115,232,.18), 0 0 0 0 rgba(26,115,232,.0); transform: translateY(0); }
+      50%{ box-shadow: 0 16px 32px rgba(26,115,232,.26), 0 0 0 8px rgba(26,115,232,.12); transform: translateY(-1px); }
+      100%{ box-shadow: 0 14px 26px rgba(26,115,232,.18), 0 0 0 0 rgba(26,115,232,.0); transform: translateY(0); }
+    }
+
+    .footer{padding: 22px 0; color: var(--muted); font-size: 13px; text-align:center;}
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 90px;
+      background:#202124;
+      color:#fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      opacity:0;
+      pointer-events:none;
+      transition: .18s ease;
+      z-index: 100;
+      max-width: calc(100% - 24px);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{opacity:1; transform: translateX(-50%) translateY(-4px)}
+
+    /* =========================
+       ✅ NEW: Convert Page (full-screen)
+    ========================== */
+    .convertPage{
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 999;
+      display:none;
+      padding-top: 64px;
+    }
+    .convertPage.show{display:block;}
+    .convertWrap{
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .convertCard{
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .convertTop{
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:#fff;
+    }
+    .convertTop b{font-size:16px}
+    .backbtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background:#fff;
+      color: var(--ink);
+      font-weight:900;
+      cursor:pointer;
+    }
+    .backbtn:hover{background: var(--chip)}
+    .convertBody{padding: 18px; display:grid; gap:14px;}
+    .row2{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      padding: 12px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: var(--chip);
+    }
+    .row2 .label{
+      font-size: 13px;
+      color: var(--muted);
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .row2 input{
+      flex:1;
+      min-width: 220px;
+      padding: 12px 12px;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      background:#fff;
+      outline:none;
+      font-weight:800;
+      color: var(--ink);
+    }
+    .row2 input:focus{
+      border-color: rgba(26,115,232,.55);
+      box-shadow: 0 0 0 4px rgba(26,115,232,.12);
+    }
+    .row2 .mini{
+      font-size:12px;
+      color: var(--muted);
+      font-weight:800;
+      white-space:nowrap;
+    }
+    .summary{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+    }
+    @media (max-width: 720px){
+      .summary{grid-template-columns: 1fr;}
+    }
+    .stat{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .stat .k{font-size:12px;color:var(--muted);font-weight:900}
+    .stat .v{font-size:16px;font-weight:1000;margin-top:4px}
+    .dlbtn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border:0;
+      background: var(--blue);
+      color:#fff;
+      font-weight:1000;
+      font-size: 16px;
+      cursor:pointer;
+      box-shadow: 0 14px 26px rgba(26,115,232,.22);
+      width:100%;
+    }
+    .dlbtn:disabled{opacity:.6; cursor:not-allowed; box-shadow:none}
+    .muteline{font-size:12px;color:var(--muted);line-height:1.4}
+    .miniThumbs{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding-top: 4px;
+    }
+    .miniThumb{
+      width:72px; height:72px;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      overflow:hidden;
+      background:#fff;
+      display:grid; place-items:center;
+    }
+    .miniThumb img{width:100%;height:100%;object-fit:cover;}
+            .mark-logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  object-fit:contain;
+  background:#fff;
+  padding:4px;
+  box-shadow:0 10px 20px rgba(0,0,0,.15);
+}
+  </style>
+</head>
+
+<body>
+  <header class="header" role="banner">
+    <div class="container">
+      <div class="h-left">
+        <a class="brand" href="/" aria-label="AeroWebAI home" id="homeBrand">
+          <div class="logo">
+           <img  src="/logo1.png" alt="AeroWebAI Logo" class="mark-logo">
+            <div class="text">
+              <b>AeroWebAI</b>
+              <span>JPG to PDF</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="h-right">
+        <a class="advbtn" href="https://aerowebai.in/image-to-pdf/" id="advBtn" aria-label="Advance version">Advance version</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ✅ MAIN PAGE -->
+  <main class="main" id="mainPage">
+    <section class="hero">
+      <div class="container">
+        <div class="wrap">
+          <h1>JPG to PDF</h1>
+          <p class="sub">Convert JPG images to PDF in seconds. Easily adjust orientation and margins.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container tool" aria-label="JPG to PDF tool">
+      <div class="card">
+        <div class="card-body">
+          <div id="drop" class="drop" role="region" aria-label="Upload area">
+            <button id="pickBtn" class="bigbtn" type="button">Select JPG images</button>
+            <div class="hint">or <b>drop JPG images here</b> (client-side only, no uploads)</div>
+            <input id="fileInput" type="file" accept="image/jpeg,image/jpg,image/png,image/webp" multiple style="display:none" />
+          </div>
+
+          <div id="thumbs" class="thumbs" aria-label="Selected images"></div>
+        </div>
+      </div>
+
+      <aside class="card side" aria-label="Options">
+        <div class="panel-title">Image to PDF options</div>
+        <div class="panel">
+          <div class="row">
+            <div class="label">Page orientation</div>
+            <div class="seg" role="tablist" aria-label="Orientation">
+              <button id="oriPortrait" class="active" type="button" aria-selected="true">Portrait</button>
+              <button id="oriLandscape" type="button" aria-selected="false">Landscape</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="label">Page size</div>
+            <select id="pageSize">
+              <option value="fit">Fit (Same page size as image)</option>
+              <option value="a4" selected>A4 (297x210 mm)</option>
+              <option value="letter">US Letter (215x279.4 mm)</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="label">Margin</div>
+            <div class="margins" role="group" aria-label="Margin">
+              <button class="pill active" data-margin="0" type="button">No</button>
+              <button class="pill" data-margin="10" type="button">Small</button>
+              <button class="pill" data-margin="20" type="button">Big</button>
+            </div>
+            <div class="smallnote">Margin is applied on all sides (in mm).</div>
+          </div>
+
+          <div class="row">
+            <label class="check">
+              <input id="mergeAll" type="checkbox" checked />
+              <div>
+                <div style="font-weight:1000;">Merge all images in one PDF file</div>
+                <div class="smallnote">If off, it will download one PDF per image.</div>
+              </div>
+            </label>
+          </div>
+
+          <div class="row"><div class="smallnote">Tip: Drag thumbnails to reorder. Use rotate / delete icons on each image.</div></div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="footer">&copy; AeroWebAI 2026 &reg; - Your PDF Editor</div>
+  </main>
+
+  <!-- ✅ Convert floating button (now: opens convert page) -->
+  <div class="convert-float" aria-label="Convert floating button">
+    <button id="convertBtn" class="btn" type="button" disabled>
+      Convert <span class="arrow" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <!-- ✅ NEW: CONVERT PAGE -->
+  <section class="convertPage" id="convertPage" aria-label="Convert page">
+    <div class="convertWrap">
+      <div class="convertCard">
+        <div class="convertTop">
+          <button class="backbtn" id="backBtn" type="button">← Back</button>
+          <b>Ready to download</b>
+          <span style="width:64px;display:block"></span>
+        </div>
+
+        <div class="convertBody">
+          <div class="row2" aria-label="PDF name on convert page">
+            <div class="label">PDF name</div>
+            <input id="pdfName2" type="text" value="aerowebai_jpg-to-pdf" placeholder="Enter PDF name" />
+            <div class="mini">.pdf</div>
+          </div>
+
+          <div class="summary" aria-label="Summary">
+            <div class="stat"><div class="k">Images</div><div class="v" id="sumImages">0</div></div>
+            <div class="stat"><div class="k">Mode</div><div class="v" id="sumMode">Merge</div></div>
+            <div class="stat"><div class="k">Page</div><div class="v" id="sumPage">A4</div></div>
+          </div>
+
+          <div class="muteline" id="sumNote">
+            Tip: Change the name above, then press <b>Download PDF</b>.
+          </div>
+
+          <div class="miniThumbs" id="miniThumbs" aria-label="Mini previews"></div>
+
+          <button class="dlbtn" id="downloadBtn" type="button">Download PDF</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+
+    const fileInput = document.getElementById("fileInput");
+    const pickBtn = document.getElementById("pickBtn");
+    const drop = document.getElementById("drop");
+    const thumbs = document.getElementById("thumbs");
+    const convertBtn = document.getElementById("convertBtn");
+    const toast = document.getElementById("toast");
+
+    const oriPortrait = document.getElementById("oriPortrait");
+    const oriLandscape = document.getElementById("oriLandscape");
+    const pageSize = document.getElementById("pageSize");
+    const mergeAll = document.getElementById("mergeAll");
+    const marginBtns = Array.from(document.querySelectorAll(".pill"));
+
+   const advBtn = document.getElementById("advBtn");
+
+advBtn.addEventListener("click", function () {
+  window.location.href = "https://aerowebai.in/image-to-pdf/";
+});
+
+    // Convert page elements
+    const mainPage = document.getElementById("mainPage");
+    const convertPage = document.getElementById("convertPage");
+    const backBtn = document.getElementById("backBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const pdfName2 = document.getElementById("pdfName2");
+    const sumImages = document.getElementById("sumImages");
+    const sumMode = document.getElementById("sumMode");
+    const sumPage = document.getElementById("sumPage");
+    const miniThumbs = document.getElementById("miniThumbs");
+
+    let state = {
+      items: [], // {id, file, url, name, rot}
+      orientation: "portrait",
+      pagesize: "a4",
+      marginMm: 0
+    };
+
+    const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(2, 6);
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=> toast.classList.remove("show"), 1600);
+    }
+
+    function updateConvertUI(){
+      const has = state.items.length > 0;
+      convertBtn.disabled = !has;
+      convertBtn.classList.toggle("blink", has);
+    }
+
+    function setOrientation(val){
+      state.orientation = val;
+      const portrait = val === "portrait";
+      oriPortrait.classList.toggle("active", portrait);
+      oriLandscape.classList.toggle("active", !portrait);
+      oriPortrait.setAttribute("aria-selected", portrait ? "true":"false");
+      oriLandscape.setAttribute("aria-selected", !portrait ? "true":"false");
+    }
+
+    function setMargin(mm){
+      state.marginMm = mm;
+      marginBtns.forEach(b => b.classList.toggle("active", Number(b.dataset.margin) === mm));
+    }
+
+    function isImgFile(f){
+      return f && (f.type === "image/jpeg" || f.type === "image/jpg" || f.type === "image/png" || f.type === "image/webp" || /\.jpe?g$/i.test(f.name));
+    }
+
+    function addFiles(files){
+      const arr = Array.from(files || []).filter(isImgFile);
+      if (!arr.length){
+        showToast("Please select JPG/PNG/WebP images.");
+        return;
+      }
+      for (const file of arr){
+        const id = uid();
+        const url = URL.createObjectURL(file);
+        state.items.push({ id, file, url, name: file.name || "image", rot: 0 });
+      }
+      render();
+      updateConvertUI();
+      showToast(arr.length + " image(s) added");
+    }
+
+    function removeItem(id){
+      const idx = state.items.findIndex(x => x.id === id);
+      if (idx >= 0){
+        URL.revokeObjectURL(state.items[idx].url);
+        state.items.splice(idx, 1);
+        render();
+        updateConvertUI();
+      }
+    }
+
+    function applyPreviewTransform(id){
+      const it = state.items.find(x => x.id === id);
+      if (!it) return;
+      const img = document.querySelector(`[data-id="${id}"] img`);
+      if (img) img.style.transform = `rotate(${it.rot}deg)`;
+    }
+    function rotateLeftItem(id){
+      const it = state.items.find(x => x.id === id);
+      if (!it) return;
+      it.rot = (it.rot - 90 + 360) % 360;
+      applyPreviewTransform(id);
+    }
+    function rotateRightItem(id){
+      const it = state.items.find(x => x.id === id);
+      if (!it) return;
+      it.rot = (it.rot + 90) % 360;
+      applyPreviewTransform(id);
+    }
+
+    function render(){
+      thumbs.innerHTML = "";
+      state.items.forEach((it, i) => {
+        const el = document.createElement("div");
+        el.className = "thumb";
+        el.dataset.id = it.id;
+        el.innerHTML = `
+          <div class="badge">${i+1}</div>
+          <div class="img">
+            <img src="${it.url}" alt="${escapeHtml(it.name)}" style="transform: rotate(${it.rot}deg)" />
+          </div>
+          <div class="meta">
+            <div class="fname">${escapeHtml(it.name)}</div>
+            <div class="actions">
+              <button class="iconbtn rotL" type="button" title="Rotate left">${iconRotateLeft()}</button>
+              <button class="iconbtn rotR" type="button" title="Rotate right">${iconRotateRight()}</button>
+              <button class="iconbtn del" type="button" title="Delete">${iconTrash()}</button>
+            </div>
+          </div>
+        `;
+        el.querySelector(".rotL").addEventListener("click", () => rotateLeftItem(it.id));
+        el.querySelector(".rotR").addEventListener("click", () => rotateRightItem(it.id));
+        el.querySelector(".del").addEventListener("click", () => removeItem(it.id));
+        thumbs.appendChild(el);
+      });
+
+      if (thumbs._sortable) thumbs._sortable.destroy();
+      thumbs._sortable = new Sortable(thumbs, {
+        animation: 140,
+        handle: ".img",
+        onEnd: () => {
+          const ids = Array.from(thumbs.querySelectorAll(".thumb")).map(t => t.dataset.id);
+          state.items.sort((a,b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+          render();
+        }
+      });
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function iconTrash(){
+      return `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <path d="M4 7h16" stroke="#202124" stroke-width="2" stroke-linecap="round"/>
+        <path d="M10 11v7M14 11v7" stroke="#202124" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6 7l1 14h10l1-14" stroke="#202124" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M9 7V4h6v3" stroke="#202124" stroke-width="2" stroke-linejoin="round"/>
+      </svg>`;
+    }
+    function iconRotateLeft(){
+      return `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <path d="M4 12a8 8 0 1 0 2.3-5.7" stroke="#202124" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 4v6h6" stroke="#202124" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+    }
+    function iconRotateRight(){
+      return `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+        <path d="M20 12a8 8 0 1 1-2.3-5.7" stroke="#202124" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 4v6h-6" stroke="#202124" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+    }
+
+    // drag & drop
+    ["dragenter","dragover"].forEach(ev => {
+      drop.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); drop.classList.add("dragover"); });
+    });
+    ["dragleave","drop"].forEach(ev => {
+      drop.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); drop.classList.remove("dragover"); });
+    });
+    drop.addEventListener("drop", (e) => addFiles(e.dataTransfer.files));
+
+    pickBtn.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+      addFiles(fileInput.files);
+      fileInput.value = "";
+    });
+
+    // options
+    oriPortrait.addEventListener("click", () => setOrientation("portrait"));
+    oriLandscape.addEventListener("click", () => setOrientation("landscape"));
+    pageSize.addEventListener("change", () => state.pagesize = pageSize.value);
+    marginBtns.forEach(btn => btn.addEventListener("click", () => setMargin(Number(btn.dataset.margin))));
+
+    function cleanPdfName(raw){
+      let name = String(raw || "").trim();
+      name = name.replace(/\.pdf$/i, "");
+      name = name.replace(/[\\/:*?"<>|]+/g, "-");
+      name = name.replace(/\s+/g, " ").trim();
+      if (!name) name = "pdf-bano";
+      if (name.length > 80) name = name.slice(0, 80).trim();
+      return name;
+    }
+
+    function pageLabel(){
+      if (state.pagesize === "a4") return "A4";
+      if (state.pagesize === "letter") return "Letter";
+      return "Fit";
+    }
+
+    function openConvertPage(){
+      if (!state.items.length) return;
+
+      // ✅ sync current name from last time (or default)
+      if (!pdfName2.value.trim()) pdfName2.value = "aerowebai_jpg-to-pdf";
+
+      // ✅ fill summary
+      sumImages.textContent = String(state.items.length);
+      sumMode.textContent = mergeAll.checked ? "Merge" : "Separate";
+      sumPage.textContent = `${pageLabel()} · ${state.orientation}`;
+
+      // ✅ mini previews
+      miniThumbs.innerHTML = "";
+      const max = Math.min(8, state.items.length);
+      for (let i=0; i<max; i++){
+        const it = state.items[i];
+        const d = document.createElement("div");
+        d.className = "miniThumb";
+        d.innerHTML = `<img src="${it.url}" alt="">`;
+        miniThumbs.appendChild(d);
+      }
+
+      // show page
+      convertPage.classList.add("show");
+      // optional: hide floating button while convert page open
+      document.querySelector(".convert-float").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "instant" });
+      pdfName2.focus();
+      pdfName2.select();
+    }
+
+    function closeConvertPage(){
+      convertPage.classList.remove("show");
+      document.querySelector(".convert-float").style.display = "";
+    }
+
+    // ✅ Convert button now opens convert page (NOT download)
+    convertBtn.addEventListener("click", () => {
+      openConvertPage();
+    });
+
+    backBtn.addEventListener("click", closeConvertPage);
+
+    // ✅ Download button on convert page does the real PDF creation
+    downloadBtn.addEventListener("click", async () => {
+      if (!state.items.length) return;
+
+      downloadBtn.disabled = true;
+      const old = downloadBtn.textContent;
+      downloadBtn.textContent = "Preparing…";
+
+      try{
+        const merge = mergeAll.checked;
+
+        if (merge){
+          const pdf = new jsPDF({ unit:"mm", format:"a4", orientation: state.orientation });
+
+          let first = true;
+          for (const it of state.items){
+            const imgEl = await loadImage(it.url);
+            const { pageW, pageH } = getPageMm(state.pagesize, state.orientation, imgEl);
+            const m = state.marginMm;
+
+            if (!first) pdf.addPage([pageW, pageH], state.orientation);
+            else {
+              if (state.pagesize === "fit"){
+                pdf.deletePage(1);
+                pdf.addPage([pageW, pageH], state.orientation);
+              } else if (state.pagesize === "letter"){
+                pdf.deletePage(1);
+                pdf.addPage("letter", state.orientation);
+              }
+              first = false;
+            }
+
+            const maxW = pageW - 2*m;
+            const maxH = pageH - 2*m;
+
+            const dataUrl = await renderRotatedToDataURLSmart(it.url, it.rot);
+            const imgDims = await getImgSizeFromDataUrl(dataUrl);
+
+            const dims = fitRect(imgDims.w, imgDims.h, maxW, maxH);
+            const x = (pageW - dims.w) / 2;
+            const y = (pageH - dims.h) / 2;
+
+            const fmt = guessFormat(it.file);
+            pdf.addImage(dataUrl, fmt, x, y, dims.w, dims.h, undefined, "FAST");
+          }
+
+          const outName = cleanPdfName(pdfName2.value) + ".pdf";
+          pdf.save(outName);
+        } else {
+          const base = cleanPdfName(pdfName2.value);
+          for (let idx = 0; idx < state.items.length; idx++){
+            const it = state.items[idx];
+            const pdf = new jsPDF({ unit:"mm", format:"a4", orientation: state.orientation });
+
+            const imgEl = await loadImage(it.url);
+            const { pageW, pageH } = getPageMm(state.pagesize, state.orientation, imgEl);
+            if (state.pagesize === "fit"){
+              pdf.deletePage(1);
+              pdf.addPage([pageW, pageH], state.orientation);
+            } else if (state.pagesize === "letter"){
+              pdf.deletePage(1);
+              pdf.addPage("letter", state.orientation);
+            }
+
+            const m = state.marginMm;
+            const maxW = pageW - 2*m;
+            const maxH = pageH - 2*m;
+
+            const dataUrl = await renderRotatedToDataURLSmart(it.url, it.rot);
+            const imgDims = await getImgSizeFromDataUrl(dataUrl);
+
+            const dims = fitRect(imgDims.w, imgDims.h, maxW, maxH);
+            const x = (pageW - dims.w) / 2;
+            const y = (pageH - dims.h) / 2;
+
+            const fmt = guessFormat(it.file);
+            pdf.addImage(dataUrl, fmt, x, y, dims.w, dims.h, undefined, "FAST");
+
+            const out = state.items.length > 1 ? `${base}-${String(idx+1).padStart(2,"0")}.pdf` : `${base}.pdf`;
+            pdf.save(out);
+          }
+        }
+
+        showToast("Downloaded ✅");
+      } catch (e){
+        console.error(e);
+        showToast("Error converting. Try smaller images.");
+        alert("Conversion failed:\n" + (e?.message || e));
+      } finally{
+        downloadBtn.textContent = old;
+        downloadBtn.disabled = false;
+      }
+    });
+
+    // helpers
+    function guessFormat(file){
+      const n = (file?.name || "").toLowerCase();
+      if (n.endsWith(".png")) return "PNG";
+      if (n.endsWith(".webp")) return "WEBP";
+      return "JPEG";
+    }
+    function loadImage(url){
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = url;
+      });
+    }
+    function fitRect(pxW, pxH, maxMmW, maxMmH){
+      const r = pxW / pxH;
+      let w = maxMmW;
+      let h = w / r;
+      if (h > maxMmH){ h = maxMmH; w = h * r; }
+      return { w, h };
+    }
+    function getPageMm(size, orientation, imgEl){
+      if (size === "a4"){
+        const w = orientation === "portrait" ? 210 : 297;
+        const h = orientation === "portrait" ? 297 : 210;
+        return { pageW:w, pageH:h };
+      }
+      if (size === "letter"){
+        const w = orientation === "portrait" ? 215.9 : 279.4;
+        const h = orientation === "portrait" ? 279.4 : 215.9;
+        return { pageW:w, pageH:h };
+      }
+      const pxW = imgEl.naturalWidth || 1000;
+      const pxH = imgEl.naturalHeight || 1000;
+      const r = pxW / pxH;
+      const longSide = 297;
+      let pageW, pageH;
+      if (r >= 1){ pageW = longSide; pageH = longSide / r; }
+      else { pageH = longSide; pageW = longSide * r; }
+
+      const wantPortrait = orientation === "portrait";
+      const nowPortrait = pageH >= pageW;
+      if (wantPortrait !== nowPortrait) [pageW, pageH] = [pageH, pageW];
+
+      pageW = Math.max(pageW, 80);
+      pageH = Math.max(pageH, 80);
+      return { pageW, pageH };
+    }
+
+    async function renderRotatedToDataURLSmart(url, rotDeg){
+      const imgEl = await loadImage(url);
+      return renderRotatedToDataURL(imgEl, rotDeg);
+    }
+    function renderRotatedToDataURL(imgEl, rotDeg){
+      const rot = ((rotDeg % 360) + 360) % 360;
+      const w = imgEl.naturalWidth;
+      const h = imgEl.naturalHeight;
+
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+
+      if (rot === 90 || rot === 270){ c.width = h; c.height = w; }
+      else { c.width = w; c.height = h; }
+
+      ctx.translate(c.width/2, c.height/2);
+      ctx.rotate(rot * Math.PI/180);
+      ctx.drawImage(imgEl, -w/2, -h/2);
+
+      return c.toDataURL("image/jpeg", 0.92);
+    }
+    function getImgSizeFromDataUrl(dataUrl){
+      return new Promise((resolve, reject) => {
+        const im = new Image();
+        im.onload = () => resolve({ w: im.naturalWidth, h: im.naturalHeight });
+        im.onerror = reject;
+        im.src = dataUrl;
+      });
+    }
+
+    setOrientation("portrait");
+    setMargin(0);
+    updateConvertUI();
+  </script>
+</body>
+</html>
