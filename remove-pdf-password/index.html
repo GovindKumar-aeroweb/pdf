@@ -10,6 +10,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
 <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-811VYN24EB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -18,9 +19,9 @@
   gtag('config', 'G-811VYN24EB');
 </script>
 <!-- PDF.js -->
-<script src="https://aerowebai.in/assets/vendor/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <!-- jsPDF -->
-<script src="https://aerowebai.in/assets/vendor/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 :root{
@@ -317,7 +318,7 @@ button,input{font:inherit}
 <script>
 /* ======= Setup PDF.js worker ======= */
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://aerowebai.in/assets/vendor/pdf.worker.min.js";
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
 const { jsPDF } = window.jspdf;
 
