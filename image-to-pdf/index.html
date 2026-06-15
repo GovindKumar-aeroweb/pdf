@@ -614,6 +614,16 @@
           </div>
 
           <div class="row">
+            <div class="label">PDF file size</div>
+            <select id="pdfQualityMode">
+              <option value="low" selected>Low KB - Best for sharing/download</option>
+              <option value="balanced">Balanced - Good quality</option>
+              <option value="high">High Quality - Larger file</option>
+            </select>
+            <div class="smallnote">Low KB keeps good quality while reducing download size.</div>
+          </div>
+
+          <div class="row">
             <div class="label">Margin</div>
             <div class="margins" role="group" aria-label="Margin">
               <button class="pill active" data-margin="0" type="button">No</button>
@@ -698,6 +708,7 @@
     const oriPortrait = document.getElementById("oriPortrait");
     const oriLandscape = document.getElementById("oriLandscape");
     const pageSize = document.getElementById("pageSize");
+    const pdfQualityMode = document.getElementById("pdfQualityMode");
     const mergeAll = document.getElementById("mergeAll");
     const marginBtns = Array.from(document.querySelectorAll(".pill"));
 
@@ -722,6 +733,7 @@ advBtn.addEventListener("click", function () {
       items: [], // {id, file, url, name, rot}
       orientation: "portrait",
       pagesize: "a4",
+      qualityMode: "low",
       marginMm: 0
     };
 
@@ -884,6 +896,7 @@ advBtn.addEventListener("click", function () {
     oriPortrait.addEventListener("click", () => setOrientation("portrait"));
     oriLandscape.addEventListener("click", () => setOrientation("landscape"));
     pageSize.addEventListener("change", () => state.pagesize = pageSize.value);
+    pdfQualityMode.addEventListener("change", () => state.qualityMode = pdfQualityMode.value);
     marginBtns.forEach(btn => btn.addEventListener("click", () => setMargin(Number(btn.dataset.margin))));
 
     function cleanPdfName(raw){
@@ -951,10 +964,11 @@ advBtn.addEventListener("click", function () {
 
       downloadBtn.disabled = true;
       const old = downloadBtn.textContent;
-      downloadBtn.textContent = "Preparing…";
+      downloadBtn.textContent = "Optimizing...";
 
       try{
         const merge = mergeAll.checked;
+        const compression = getCompressionSettings(state.qualityMode);
 
         if (merge){
           const pdf = new jsPDF({ unit:"mm", format:"a4", orientation: state.orientation });
@@ -980,15 +994,12 @@ advBtn.addEventListener("click", function () {
             const maxW = pageW - 2*m;
             const maxH = pageH - 2*m;
 
-            const dataUrl = await renderRotatedToDataURLSmart(it.url, it.rot);
-            const imgDims = await getImgSizeFromDataUrl(dataUrl);
-
-            const dims = fitRect(imgDims.w, imgDims.h, maxW, maxH);
+            const optimized = await prepareImageForPdf(it.url, it.rot, state.qualityMode);
+            const dims = fitRect(optimized.width, optimized.height, maxW, maxH);
             const x = (pageW - dims.w) / 2;
             const y = (pageH - dims.h) / 2;
 
-            const fmt = guessFormat(it.file);
-            pdf.addImage(dataUrl, fmt, x, y, dims.w, dims.h, undefined, "FAST");
+            pdf.addImage(optimized.dataUrl, "JPEG", x, y, dims.w, dims.h, undefined, compression.addImageCompression);
           }
 
           const outName = cleanPdfName(pdfName2.value) + ".pdf";
@@ -1013,15 +1024,12 @@ advBtn.addEventListener("click", function () {
             const maxW = pageW - 2*m;
             const maxH = pageH - 2*m;
 
-            const dataUrl = await renderRotatedToDataURLSmart(it.url, it.rot);
-            const imgDims = await getImgSizeFromDataUrl(dataUrl);
-
-            const dims = fitRect(imgDims.w, imgDims.h, maxW, maxH);
+            const optimized = await prepareImageForPdf(it.url, it.rot, state.qualityMode);
+            const dims = fitRect(optimized.width, optimized.height, maxW, maxH);
             const x = (pageW - dims.w) / 2;
             const y = (pageH - dims.h) / 2;
 
-            const fmt = guessFormat(it.file);
-            pdf.addImage(dataUrl, fmt, x, y, dims.w, dims.h, undefined, "FAST");
+            pdf.addImage(optimized.dataUrl, "JPEG", x, y, dims.w, dims.h, undefined, compression.addImageCompression);
 
             const out = state.items.length > 1 ? `${base}-${String(idx+1).padStart(2,"0")}.pdf` : `${base}.pdf`;
             pdf.save(out);
@@ -1031,8 +1039,9 @@ advBtn.addEventListener("click", function () {
         showToast("Downloaded ✅");
       } catch (e){
         console.error(e);
-        showToast("Error converting. Try smaller images.");
-        alert("Conversion failed:\n" + (e?.message || e));
+        const reason = e?.message || String(e);
+        showToast("PDF creation failed. Try smaller images.");
+        alert("PDF creation failed:\n" + reason);
       } finally{
         downloadBtn.textContent = old;
         downloadBtn.disabled = false;
@@ -1040,17 +1049,22 @@ advBtn.addEventListener("click", function () {
     });
 
     // helpers
-    function guessFormat(file){
-      const n = (file?.name || "").toLowerCase();
-      if (n.endsWith(".png")) return "PNG";
-      if (n.endsWith(".webp")) return "WEBP";
-      return "JPEG";
+    function getCompressionSettings(qualityMode){
+      if (qualityMode === "high"){
+        return { maxSide: 3200, jpegQuality: 0.94, addImageCompression: "FAST" };
+      }
+      if (qualityMode === "balanced"){
+        return { maxSide: 2200, jpegQuality: 0.88, addImageCompression: "MEDIUM" };
+      }
+      return { maxSide: 1600, jpegQuality: 0.82, addImageCompression: "MEDIUM" };
     }
+
     function loadImage(url){
       return new Promise((resolve, reject) => {
         const img = new Image();
+        img.decoding = "async";
         img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onerror = () => reject(new Error("Image load failed. Please remove that image and try again."));
         img.src = url;
       });
     }
@@ -1089,34 +1103,52 @@ advBtn.addEventListener("click", function () {
       return { pageW, pageH };
     }
 
-    async function renderRotatedToDataURLSmart(url, rotDeg){
+    async function prepareImageForPdf(url, rotation, qualityMode){
       const imgEl = await loadImage(url);
-      return renderRotatedToDataURL(imgEl, rotDeg);
+      const settings = getCompressionSettings(qualityMode);
+      const canvas = drawImageToOptimizedCanvas(imgEl, rotation, settings.maxSide);
+      return {
+        dataUrl: canvas.toDataURL("image/jpeg", settings.jpegQuality),
+        width: canvas.width,
+        height: canvas.height
+      };
     }
-    function renderRotatedToDataURL(imgEl, rotDeg){
+
+    function drawImageToOptimizedCanvas(imgEl, rotDeg, maxSide){
       const rot = ((rotDeg % 360) + 360) % 360;
-      const w = imgEl.naturalWidth;
-      const h = imgEl.naturalHeight;
+      const sourceW = imgEl.naturalWidth || imgEl.width;
+      const sourceH = imgEl.naturalHeight || imgEl.height;
+
+      if (!sourceW || !sourceH){
+        throw new Error("Could not read image dimensions.");
+      }
+
+      const scale = Math.min(1, maxSide / Math.max(sourceW, sourceH));
+      const drawW = Math.max(1, Math.round(sourceW * scale));
+      const drawH = Math.max(1, Math.round(sourceH * scale));
 
       const c = document.createElement("canvas");
-      const ctx = c.getContext("2d");
+      const ctx = c.getContext("2d", { alpha: false });
 
-      if (rot === 90 || rot === 270){ c.width = h; c.height = w; }
-      else { c.width = w; c.height = h; }
+      if (!ctx){
+        throw new Error("Canvas is not available in this browser.");
+      }
 
+      if (rot === 90 || rot === 270){
+        c.width = drawH;
+        c.height = drawW;
+      } else {
+        c.width = drawW;
+        c.height = drawH;
+      }
+
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, c.width, c.height);
       ctx.translate(c.width/2, c.height/2);
       ctx.rotate(rot * Math.PI/180);
-      ctx.drawImage(imgEl, -w/2, -h/2);
+      ctx.drawImage(imgEl, -drawW/2, -drawH/2, drawW, drawH);
 
-      return c.toDataURL("image/jpeg", 0.92);
-    }
-    function getImgSizeFromDataUrl(dataUrl){
-      return new Promise((resolve, reject) => {
-        const im = new Image();
-        im.onload = () => resolve({ w: im.naturalWidth, h: im.naturalHeight });
-        im.onerror = reject;
-        im.src = dataUrl;
-      });
+      return c;
     }
 
     setOrientation("portrait");
