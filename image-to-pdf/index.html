@@ -302,6 +302,102 @@
     .footer{padding:22px 0;color:var(--muted);font-size:13px;text-align:center}
     .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:90px;background:#202124;color:#fff;padding:10px 12px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.18s ease;z-index:1000;max-width:calc(100% - 24px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+
+    /* Mobile: image-card format like screenshot (only preview format changed) */
+    @media (max-width:720px){
+      .card-body{padding:12px;}
+
+      .thumbs{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:center !important;
+        gap:16px !important;
+        margin-top:16px !important;
+        overflow:visible !important;
+        padding:0 0 120px !important;
+      }
+
+      .thumb{
+        width:70% !important;
+        min-width:0 !important;
+        max-width:330px !important;
+        min-height:0 !important;
+        border-radius:14px !important;
+        background:#fff !important;
+        border:1px solid #e7eaf0 !important;
+        box-shadow:0 8px 22px rgba(60,64,67,.10) !important;
+        overflow:hidden !important;
+      }
+
+      .thumb:hover{transform:none !important;}
+
+      .thumb .img{
+        width:100% !important;
+        height:260px !important;
+        padding:18px 14px 4px !important;
+        background:#fff !important;
+        display:flex !important;
+        align-items:center !important;
+        justify-content:center !important;
+        overflow:hidden !important;
+      }
+
+      .thumb img{
+        width:auto !important;
+        height:auto !important;
+        max-width:100% !important;
+        max-height:100% !important;
+        object-fit:contain !important;
+        display:block !important;
+        box-shadow:0 4px 14px rgba(60,64,67,.16) !important;
+      }
+
+      .meta{
+        border-top:0 !important;
+        padding:8px 12px 14px !important;
+        display:flex !important;
+        justify-content:center !important;
+        align-items:center !important;
+      }
+
+      .fname{
+        text-align:center !important;
+        font-size:16px !important;
+        color:#4b5563 !important;
+        font-weight:500 !important;
+        white-space:nowrap !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+      }
+
+      .fileInfo{display:none !important;}
+
+      .actions{
+        position:absolute !important;
+        right:8px !important;
+        top:8px !important;
+        gap:4px !important;
+        opacity:.96 !important;
+      }
+
+      .iconbtn{
+        width:28px !important;
+        height:28px !important;
+        border-radius:50% !important;
+        background:rgba(255,255,255,.95) !important;
+        box-shadow:0 4px 12px rgba(60,64,67,.14) !important;
+      }
+
+      .badge{
+        left:8px !important;
+        top:8px !important;
+        min-width:28px !important;
+        height:28px !important;
+        font-size:12px !important;
+      }
+    }
+
   </style>
 </head>
 
@@ -316,7 +412,7 @@
       </a>
       <div class="h-right">
         <button id="clearAllTop" class="clearTopBtn" type="button">Clear all</button>
-        <a class="advbtn" href="https://sites.google.com/view/onepagetool/img-to-pdf" aria-label="Advance version">Advance version</a>
+        <!-- <a class="advbtn" href="https://sites.google.com/view/onepagetool/img-to-pdf" aria-label="Advance version">Advance version</a> -->
       </div>
     </div>
   </header>
@@ -403,14 +499,14 @@
       </aside>
     </section>
 
-    <section class="container faq" aria-label="FAQ">
+    <!-- <section class="container faq" aria-label="FAQ">
       <h2>JPG to PDF FAQ</h2>
       <div class="faqGrid">
         <div class="faqItem"><b>Is JPG to PDF free?</b><p>Yes. This tool is free for converting images to PDF.</p></div>
         <div class="faqItem"><b>Are images uploaded to server?</b><p>No. Images are processed inside your browser, so your files stay private.</p></div>
         <div class="faqItem"><b>How to reduce PDF size?</b><p>Select Low KB mode. It resizes and compresses images before creating the PDF.</p></div>
       </div>
-    </section>
+    </section> -->
 
     <div class="footer">&copy; AeroWebAI 2026 &reg; - Your PDF Editor</div>
   </main>
