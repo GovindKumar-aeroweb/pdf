@@ -965,7 +965,7 @@
       readyTitle.textContent = `${state.items.length} Image${state.items.length > 1 ? "s" : ""} Ready`;
       sumImages.textContent = String(state.items.length);
       sumMode.textContent = mergeAll.checked ? "Merge" : "Separate";
-      sumPage.textContent = `${pageLabel()} · ${state.orientation}`;
+      sumPage.textContent = state.pagesize === "fit" ? "Fit to image" : `${pageLabel()} · ${state.orientation}`;
       sumEstimate.textContent = formatBytes(estimatePdfSize());
       progressWrap.classList.remove("show");
       successBox.classList.remove("show");
@@ -1034,31 +1034,62 @@
         const compression = getCompressionSettings(state.qualityMode);
 
         if (merge){
-          const pdf = new jsPDF({ unit:"mm", format:"a4", orientation: state.orientation });
-          let first = true;
+          let pdf = null;
 
           for (let idx = 0; idx < state.items.length; idx++){
             updateProgress(idx + 1, state.items.length);
+
             const it = state.items[idx];
             const imgEl = await loadImage(it.url);
-            const { pageW, pageH } = getPageMm(state.pagesize, state.orientation, imgEl);
-            const m = Math.min(state.marginMm, pageW / 4, pageH / 4);
+            const optimized = await prepareImageForPdf(it.url, it.rot, state.qualityMode);
 
-            if (!first) pdf.addPage([pageW, pageH], state.orientation);
-            else {
-              if (state.pagesize === "fit"){
-                pdf.deletePage(1);
-                pdf.addPage([pageW, pageH], state.orientation);
-              } else if (state.pagesize === "letter"){
-                pdf.deletePage(1);
-                pdf.addPage("letter", state.orientation);
-              }
-              first = false;
+            let pageW, pageH, drawX, drawY, drawW, drawH, pageOrientation;
+
+            if (state.pagesize === "fit"){
+              // TRUE FIT TO IMAGE:
+              // Page size follows the rotated image itself.
+              // No margin, no white border, no crop.
+              const fit = getFitImagePageMm(imgEl, it.rot);
+              pageW = fit.pageW;
+              pageH = fit.pageH;
+              drawX = 0;
+              drawY = 0;
+              drawW = pageW;
+              drawH = pageH;
+              pageOrientation = pageW > pageH ? "landscape" : "portrait";
+            } else {
+              const page = getPageMm(state.pagesize, state.orientation, imgEl);
+              pageW = page.pageW;
+              pageH = page.pageH;
+              const m = Math.min(state.marginMm, pageW / 4, pageH / 4);
+              const dims = fitRect(optimized.width, optimized.height, pageW - 2*m, pageH - 2*m);
+              drawX = (pageW - dims.w) / 2;
+              drawY = (pageH - dims.h) / 2;
+              drawW = dims.w;
+              drawH = dims.h;
+              pageOrientation = state.orientation;
             }
 
-            const optimized = await prepareImageForPdf(it.url, it.rot, state.qualityMode);
-            const dims = fitRect(optimized.width, optimized.height, pageW - 2*m, pageH - 2*m);
-            pdf.addImage(optimized.dataUrl, "JPEG", (pageW - dims.w)/2, (pageH - dims.h)/2, dims.w, dims.h, undefined, compression.addImageCompression);
+            if (!pdf){
+              pdf = new jsPDF({
+                unit: "mm",
+                format: [pageW, pageH],
+                orientation: pageOrientation
+              });
+            } else {
+              pdf.addPage([pageW, pageH], pageOrientation);
+            }
+
+            pdf.addImage(
+              optimized.dataUrl,
+              "JPEG",
+              drawX,
+              drawY,
+              drawW,
+              drawH,
+              undefined,
+              compression.addImageCompression
+            );
 
             await new Promise(r => setTimeout(r, 0));
           }
@@ -1077,23 +1108,54 @@
 
           for (let idx = 0; idx < state.items.length; idx++){
             updateProgress(idx + 1, state.items.length);
+
             const it = state.items[idx];
-            const pdf = new jsPDF({ unit:"mm", format:"a4", orientation: state.orientation });
             const imgEl = await loadImage(it.url);
-            const { pageW, pageH } = getPageMm(state.pagesize, state.orientation, imgEl);
+            const optimized = await prepareImageForPdf(it.url, it.rot, state.qualityMode);
+
+            let pageW, pageH, drawX, drawY, drawW, drawH, pageOrientation;
 
             if (state.pagesize === "fit"){
-              pdf.deletePage(1);
-              pdf.addPage([pageW, pageH], state.orientation);
-            } else if (state.pagesize === "letter"){
-              pdf.deletePage(1);
-              pdf.addPage("letter", state.orientation);
+              // TRUE FIT TO IMAGE:
+              // Page size follows the rotated image itself.
+              // No margin, no white border, no crop.
+              const fit = getFitImagePageMm(imgEl, it.rot);
+              pageW = fit.pageW;
+              pageH = fit.pageH;
+              drawX = 0;
+              drawY = 0;
+              drawW = pageW;
+              drawH = pageH;
+              pageOrientation = pageW > pageH ? "landscape" : "portrait";
+            } else {
+              const page = getPageMm(state.pagesize, state.orientation, imgEl);
+              pageW = page.pageW;
+              pageH = page.pageH;
+              const m = Math.min(state.marginMm, pageW / 4, pageH / 4);
+              const dims = fitRect(optimized.width, optimized.height, pageW - 2*m, pageH - 2*m);
+              drawX = (pageW - dims.w) / 2;
+              drawY = (pageH - dims.h) / 2;
+              drawW = dims.w;
+              drawH = dims.h;
+              pageOrientation = state.orientation;
             }
 
-            const m = Math.min(state.marginMm, pageW / 4, pageH / 4);
-            const optimized = await prepareImageForPdf(it.url, it.rot, state.qualityMode);
-            const dims = fitRect(optimized.width, optimized.height, pageW - 2*m, pageH - 2*m);
-            pdf.addImage(optimized.dataUrl, "JPEG", (pageW - dims.w)/2, (pageH - dims.h)/2, dims.w, dims.h, undefined, compression.addImageCompression);
+            const pdf = new jsPDF({
+              unit: "mm",
+              format: [pageW, pageH],
+              orientation: pageOrientation
+            });
+
+            pdf.addImage(
+              optimized.dataUrl,
+              "JPEG",
+              drawX,
+              drawY,
+              drawW,
+              drawH,
+              undefined,
+              compression.addImageCompression
+            );
 
             const blob = pdf.output("blob");
             totalSize += blob.size;
@@ -1146,16 +1208,40 @@
     }
 
     function getPageMm(size, orientation, imgEl){
-      if (size === "a4") return { pageW: orientation === "portrait" ? 210 : 297, pageH: orientation === "portrait" ? 297 : 210 };
-      if (size === "letter") return { pageW: orientation === "portrait" ? 215.9 : 279.4, pageH: orientation === "portrait" ? 279.4 : 215.9 };
+      if (size === "a4") {
+        return {
+          pageW: orientation === "portrait" ? 210 : 297,
+          pageH: orientation === "portrait" ? 297 : 210
+        };
+      }
 
-      const pxW = imgEl.naturalWidth || 1000, pxH = imgEl.naturalHeight || 1000;
-      const r = pxW / pxH, longSide = 297;
-      let pageW, pageH;
-      if (r >= 1){ pageW = longSide; pageH = longSide / r; } else { pageH = longSide; pageW = longSide * r; }
-      const wantPortrait = orientation === "portrait", nowPortrait = pageH >= pageW;
-      if (wantPortrait !== nowPortrait) [pageW, pageH] = [pageH, pageW];
-      return { pageW: Math.max(pageW, 80), pageH: Math.max(pageH, 80) };
+      if (size === "letter") {
+        return {
+          pageW: orientation === "portrait" ? 215.9 : 279.4,
+          pageH: orientation === "portrait" ? 279.4 : 215.9
+        };
+      }
+
+      // Fallback only. Real "fit" mode uses getFitImagePageMm().
+      return getFitImagePageMm(imgEl, 0);
+    }
+
+    function getFitImagePageMm(imgEl, rotation){
+      const pxToMm = 0.264583; // 96dpi CSS pixel to mm
+      const rot = ((rotation % 360) + 360) % 360;
+
+      let pxW = imgEl.naturalWidth || imgEl.width || 1000;
+      let pxH = imgEl.naturalHeight || imgEl.height || 1000;
+
+      // If user rotated the image, the PDF page must rotate too.
+      if (rot === 90 || rot === 270) {
+        [pxW, pxH] = [pxH, pxW];
+      }
+
+      return {
+        pageW: Math.max(10, pxW * pxToMm),
+        pageH: Math.max(10, pxH * pxToMm)
+      };
     }
 
     async function prepareImageForPdf(url, rotation, qualityMode){
